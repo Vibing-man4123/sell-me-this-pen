@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dial Tone Dynasty
 
-## Getting Started
+A satirical cold-calling game. You play **Jordan Beltford**, a parody 90s broker with too much
+hair gel and no discernible licence: cold-call AI clients, sell them increasingly indefensible
+merchandise, get graded by an LLM judge on charisma, confidence, objection handling and closing,
+then spend the commission on a tasteless lifestyle.
 
-First, run the development server:
+> Jordan Beltford is an original caricature. Not based on, affiliated with, or endorsed by any
+> real broker.
+
+## Stack
+
+| Layer | Choice |
+|---|---|
+| App | Next.js 16 (App Router) + TypeScript |
+| Styling | Tailwind CSS 4 (tokens in `src/app/globals.css`) |
+| State | Zustand (from Phase 2) |
+| Schema / structured output | Zod 4 |
+| LLM | Groq free tier, behind a server-side route handler |
+| Persistence | `localStorage` (Phase 2) |
+| Hosting | Vercel |
+
+## Running it
 
 ```bash
+npm install
+cp .env.example .env.local   # fill in GROQ_API_KEY once Phase 1 lands
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- `/` - title screen
+- `/moodboard` - style bible: palette, type, the hand-drawn vector set, the scoring rubric, and a
+  worked payout example
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploying
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npx vercel login
+npx vercel          # preview
+npx vercel --prod   # production
+```
 
-## Learn More
+From Phase 1 onward, set `GROQ_API_KEY` in the Vercel project's environment variables. It is read
+only in server-side code and never shipped to the browser.
 
-To learn more about Next.js, take a look at the following resources:
+## Where things live
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+  app/
+    globals.css          design tokens: palette, fonts, paper/felt textures
+    page.tsx             title screen
+    moodboard/page.tsx   style bible
+  components/
+    art/                 hand-built flat-vector SVG (portraits, item icons)
+    ui/                  Button, Panel - the only two primitives
+  lib/
+    game/
+      rubric.ts          scoring criteria, weights, anchors, Zod verdict schema
+      payout.ts          verdict -> commission
+      personas.ts        the AI clients
+      items.ts           the merchandise
+      ranks.ts           Intern -> Legend ladder
+      constants.ts       per-call tuning knobs
+    prompts/
+      clientPrompt.ts    system prompt for the client on the line
+      judgePrompt.ts     system prompt + calibration examples for the grader
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Balance lives in data, not in components: weights in `rubric.ts`, dollar values in `items.ts`,
+difficulty in `personas.ts`. Re-tuning the game should not require touching UI or prompts.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See `PLAN.md` for the roadmap and `PROGRESS.md` for where we actually are.
