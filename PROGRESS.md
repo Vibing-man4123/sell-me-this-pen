@@ -103,6 +103,23 @@ Domyślny favicon Next.js zastąpiony własnym (`src/app/icon.svg`) — złoty d
 
 ---
 
+## Infrastruktura (stan na 2026-11-09)
+
+| Element | Stan |
+|---|---|
+| Repo | `github.com/Vibing-man4123/sell-me-this-pen` (prywatne), SSH, 7 commitów |
+| Hosting | Vercel, projekt `sell-me-this-pen`, **Root Directory = `cold`** |
+| Produkcja | https://sellmethispen.vercel.app (aliasy: `cold-roan`, `cold-rodion16`) |
+| Auto-deploy | ✅ działa — `git push` na `main` buduje i publikuje bez żadnej komendy |
+| Klucz Groq | `cold/.env.local` lokalnie + Vercel: Production / Preview / Development |
+
+**Pułapki, na które się nadziałem — żeby nie powtórzyć:**
+- Przestrzeń `*.vercel.app` jest globalna. `sell-me-this-pen.vercel.app` należy do obcego projektu — zmiana nazwy projektu NIE tworzy aliasu, jeśli nazwa jest zajęta. Weryfikując deploy sprawdzaj treść (`<title>`), nie sam kod 200.
+- Root Directory nie ustawia się sam po przeniesieniu apki do podkatalogu. Deploye z CLI działały, bo odpalane z `cold/`, ale build z GitHuba padłby na braku `package.json` w korzeniu.
+- Prawdziwy klucz nigdy nie idzie do `.env.example` — ten plik jest śledzony przez gita. GitHub Push Protection złapał to i zablokował push; historię trzeba było przepisać i klucz zrotować.
+
+---
+
 ## Decyzje projektowe
 
 | Data | Decyzja | Dlaczego |
