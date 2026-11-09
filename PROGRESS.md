@@ -4,7 +4,7 @@
 
 **Start projektu:** 2026-11-08
 **Ostatnia aktualizacja:** 2026-11-09
-**Live:** https://cold-roan.vercel.app
+**Live:** https://sellmethispen.vercel.app
 
 ---
 
@@ -94,12 +94,12 @@ Szkielet: tytuł w złotej folii, pitch, galeria 6 person, pętla rozgrywki, dra
 Domyślny favicon Next.js zastąpiony własnym (`src/app/icon.svg`) — złoty długopis na granacie, ten sam obrys co reszta zestawu wektorowego. Sprawdzona czytelność przy 32px, bo tyle realnie renderuje karta przeglądarki.
 
 ### ✅ Deploy na Vercel (2026-11-09)
-- **Produkcja: https://cold-roan.vercel.app** — status Ready, build 12–30 s, obie strony (`/` i `/moodboard`) zwracają 200
+- **Produkcja: https://sellmethispen.vercel.app** — status Ready, build 12–30 s, obie strony (`/` i `/moodboard`) zwracają 200
 - Root Directory ustawiony na `cold` — zadziałało
 - Zweryfikowane na żywo: tytuł, 6 portretów, 6 ikon, rubric, wyliczenie prowizji, własna ikona. Strona waży 73 KB HTML i ładuje się w ~0.34 s — z zapasem pod szkolne Chromebooki.
 - Zmienne środowiskowe: na razie żadne nie są potrzebne (Groq dochodzi w Fazie 1)
 
-**Drobiazg do rozważenia:** projekt na Vercelu nazywa się `cold` (od katalogu), stąd URL `cold-roan.vercel.app`. W portfolio ładniej wyglądałoby `sell-me-this-pen.vercel.app` — zmiana w Vercel → Settings → Project Name, stary URL dalej będzie działał.
+**Adresy:** projekt nazywa się `sell-me-this-pen`, produkcja stoi pod **sellmethispen.vercel.app**. Uwaga na pułapkę: przestrzeń `*.vercel.app` jest globalna i pierwszy bierze — `sell-me-this-pen.vercel.app` było już zajęte przez cudzy projekt, dlatego alias jest bez myślników. Wersje z myślnikami NIE są nasze. Stare adresy `cold-roan` i `cold-rodion16` też dalej prowadzą do gry.
 
 ---
 

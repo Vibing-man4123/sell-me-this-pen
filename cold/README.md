@@ -1,6 +1,6 @@
 # Sell Me This Pen
 
-**Live: https://cold-roan.vercel.app**
+**Live: https://sellmethispen.vercel.app**
 
 A satirical cold-calling game. You play **Jordan Beltford**, a parody 90s broker with too much
 hair gel and no discernible licence: cold-call AI clients, sell them increasingly indefensible
