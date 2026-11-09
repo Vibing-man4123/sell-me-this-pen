@@ -4,6 +4,7 @@
 
 **Start projektu:** 2026-11-08
 **Ostatnia aktualizacja:** 2026-11-09
+**Live:** https://cold-roan.vercel.app
 
 ---
 
@@ -11,13 +12,13 @@
 
 | Faza | Zakres | Budżet z planu | Planowany koniec | Status |
 |---|---|---|---|---|
-| **0** | Setup & design | 2–3 dni | 2026-11-10 | 🟢 **Zrobione** (poza deployem — czeka na Ciebie) |
+| **0** | Setup & design | 2–3 dni | 2026-11-10 | ✅ **ZAMKNIĘTA** 2026-11-09 |
 | 1 | Core call loop (MVP) | ~1 tydzień | 2026-11-17 | ⚪ Nie zaczęte |
 | 2 | Progression system | ~1 tydzień | 2026-11-24 | ⚪ Nie zaczęte |
 | 3 | Humor & polish treści | ~1 tydzień | 2026-12-01 | ⚪ Nie zaczęte |
 | 4 | Classroom-ready polish | 3–5 dni | 2026-12-06 | ⚪ Nie zaczęte |
 
-**Jak się trzymamy:** przed harmonogramem. Faza 0 miała zająć 2–3 dni, zamknięta w jednej sesji, a przy okazji wyprzedziliśmy część roboty z Faz 2–3 (komplet 6 person i 6 przedmiotów zamiast jednego przykładu, drabinka rang, pełny system payoutu). Realistyczny termin grywalnego MVP: **początek grudnia 2026**, z zapasem.
+**Jak się trzymamy:** przed harmonogramem. Faza 0 miała zająć 2–3 dni, zamknięta w dwóch sesjach (2026-11-08/09), a przy okazji wyprzedziliśmy część roboty z Faz 2–3 (komplet 6 person i 6 przedmiotów zamiast jednego przykładu, drabinka rang, pełny system payoutu). Dzień zapasu w kieszeni. Realistyczny termin grywalnego MVP: **początek grudnia 2026**.
 
 Legenda: 🟢 zrobione · 🟡 w trakcie · 🔴 zablokowane · ⚪ nie zaczęte
 
@@ -89,16 +90,16 @@ Szkielet: tytuł w złotej folii, pitch, galeria 6 person, pętla rozgrywki, dra
 - Tytuł siedzi w jednej stałej (`GAME_TITLE` w `constants.ts`), więc kolejna zmiana nazwy to edycja jednej linijki.
 - **Aplikacja przeniesiona do `cold/`**, `PLAN.md` i `PROGRESS.md` zostają w korzeniu repo. Historia gita zachowana (`git mv`). Build i lint przechodzą z nowej lokalizacji.
 
-### 🔴 Deploy na Vercel — **czeka na Ciebie**
-Jedyny punkt Fazy 0, którego nie mogę domknąć sam: wymaga Twojego logowania.
-```bash
-cd cold
-npx vercel login
-npx vercel --prod
-```
-⚠️ Po przeniesieniu aplikacji do podkatalogu trzeba ustawić w projekcie Vercel **Root Directory = `cold`**. Odpalenie komend z wnętrza `cold/` sprawia, że CLI samo to zaproponuje.
+### ✅ Ikona aplikacji (2026-11-09)
+Domyślny favicon Next.js zastąpiony własnym (`src/app/icon.svg`) — złoty długopis na granacie, ten sam obrys co reszta zestawu wektorowego. Sprawdzona czytelność przy 32px, bo tyle realnie renderuje karta przeglądarki.
 
-Repo jest gotowe (build przechodzi, `.vercel` w `.gitignore`). Daj znać jak przejdzie.
+### ✅ Deploy na Vercel (2026-11-09)
+- **Produkcja: https://cold-roan.vercel.app** — status Ready, build 12–30 s, obie strony (`/` i `/moodboard`) zwracają 200
+- Root Directory ustawiony na `cold` — zadziałało
+- Zweryfikowane na żywo: tytuł, 6 portretów, 6 ikon, rubric, wyliczenie prowizji, własna ikona. Strona waży 73 KB HTML i ładuje się w ~0.34 s — z zapasem pod szkolne Chromebooki.
+- Zmienne środowiskowe: na razie żadne nie są potrzebne (Groq dochodzi w Fazie 1)
+
+**Drobiazg do rozważenia:** projekt na Vercelu nazywa się `cold` (od katalogu), stąd URL `cold-roan.vercel.app`. W portfolio ładniej wyglądałoby `sell-me-this-pen.vercel.app` — zmiana w Vercel → Settings → Project Name, stary URL dalej będzie działał.
 
 ---
 
