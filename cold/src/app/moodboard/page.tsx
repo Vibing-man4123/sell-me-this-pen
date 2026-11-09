@@ -12,7 +12,7 @@ import { CRITERIA, RUBRIC, SCORE_MAX, type Verdict } from "@/lib/game/rubric";
 export const metadata: Metadata = {
   title: `Style bible - ${GAME_TITLE}`,
   description:
-    "Palette, type, hand-drawn vector set, UI primitives and the scoring rubric for Dial Tone Dynasty.",
+    "Palette, type, hand-drawn vector set, UI primitives and the scoring rubric for Sell Me This Pen.",
 };
 
 const SWATCHES: { token: string; hex: string; use: string; className: string }[] = [

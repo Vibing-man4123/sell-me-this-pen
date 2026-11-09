@@ -1,6 +1,6 @@
-# Dial Tone Dynasty — Plan Rozwoju
+# Sell Me This Pen — Plan Rozwoju
 
-> Robocza nazwa: **"Dial Tone Dynasty"** (alternatywy: "Cold Call Tycoon", "The Rolodex"). Zamiast używać wizerunku prawdziwego Jordana Belforta (ryzyko prawne/wizerunkowe na publicznym portfolio), gracz wciela się w **oryginalną karykaturę** — "Jordan Beltford", parodystycznego brokera lat 90' z za dużym gelem na głowie. Ten sam vibe, zero problemów z prawami do wizerunku.
+> Tytuł: **"Sell Me This Pen"** (ustalony 2026-11-09; robocze warianty: "Dial Tone Dynasty", "Cold Call Tycoon", "The Rolodex"). Katalog roboczy aplikacji: `cold/`. Zamiast używać wizerunku prawdziwego Jordana Belforta (ryzyko prawne/wizerunkowe na publicznym portfolio), gracz wciela się w **oryginalną karykaturę** — "Jordan Beltford", parodystycznego brokera lat 90' z za dużym gelem na głowie. Ten sam vibe, zero problemów z prawami do wizerunku.
 
 ## Koncept w jednym zdaniu
 Gracz jako karykatura cwanego brokera prowadzi cold calle sprzedając coraz absurdalniejsze przedmioty rosnąco dziwnym AI-klientom, zarabia kasę na podstawie realnej oceny jego rozmowy (charyzma/pewność/obsługa obiekcji/closing), i wydaje ją na coraz bardziej groteskowy luksusowy styl życia — klasyczna progression loop w stylu "Wall Street excess".

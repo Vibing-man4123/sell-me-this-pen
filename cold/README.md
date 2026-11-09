@@ -1,4 +1,4 @@
-# Dial Tone Dynasty
+# Sell Me This Pen
 
 A satirical cold-calling game. You play **Jordan Beltford**, a parody 90s broker with too much
 hair gel and no discernible licence: cold-call AI clients, sell them increasingly indefensible
@@ -23,6 +23,7 @@ then spend the commission on a tasteless lifestyle.
 ## Running it
 
 ```bash
+cd cold
 npm install
 cp .env.example .env.local   # fill in GROQ_API_KEY once Phase 1 lands
 npm run dev
@@ -35,10 +36,14 @@ npm run dev
 ## Deploying
 
 ```bash
+cd cold
 npx vercel login
 npx vercel          # preview
 npx vercel --prod   # production
 ```
+
+The repo root is one level above the app, so set the Vercel project's **Root Directory** to
+`cold`. Running the commands from inside `cold/` makes the CLI offer exactly that.
 
 From Phase 1 onward, set `GROQ_API_KEY` in the Vercel project's environment variables. It is read
 only in server-side code and never shipped to the browser.
@@ -70,4 +75,5 @@ src/
 Balance lives in data, not in components: weights in `rubric.ts`, dollar values in `items.ts`,
 difficulty in `personas.ts`. Re-tuning the game should not require touching UI or prompts.
 
-See `PLAN.md` for the roadmap and `PROGRESS.md` for where we actually are.
+The app lives in `cold/`; `../PLAN.md` holds the roadmap and `../PROGRESS.md` tracks where we
+actually are.

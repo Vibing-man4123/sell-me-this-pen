@@ -1,9 +1,9 @@
-# Dial Tone Dynasty — Dziennik postępów
+# Sell Me This Pen — Dziennik postępów
 
 > Plik prowadzony równolegle do `PLAN.md`. `PLAN.md` = co zamierzamy, `PROGRESS.md` = co faktycznie zrobione i jak stoimy z czasem.
 
 **Start projektu:** 2026-11-08
-**Ostatnia aktualizacja:** 2026-11-08
+**Ostatnia aktualizacja:** 2026-11-09
 
 ---
 
@@ -11,7 +11,7 @@
 
 | Faza | Zakres | Budżet z planu | Planowany koniec | Status |
 |---|---|---|---|---|
-| **0** | Setup & design | 2–3 dni | 2026-11-10 | 🟢 **Zrobione w 1 dzień** (poza deployem — czeka na Ciebie) |
+| **0** | Setup & design | 2–3 dni | 2026-11-10 | 🟢 **Zrobione** (poza deployem — czeka na Ciebie) |
 | 1 | Core call loop (MVP) | ~1 tydzień | 2026-11-17 | ⚪ Nie zaczęte |
 | 2 | Progression system | ~1 tydzień | 2026-11-24 | ⚪ Nie zaczęte |
 | 3 | Humor & polish treści | ~1 tydzień | 2026-12-01 | ⚪ Nie zaczęte |
@@ -84,12 +84,20 @@ Zamiast pliku w Figmie zrobiony jako **żywa strona w repo** — nie rozjedzie s
 ### ✅ Ekran tytułowy — `/`
 Szkielet: tytuł w złotej folii, pitch, galeria 6 person, pętla rozgrywki, drabinka rang, disclaimer prawny.
 
+### ✅ Tytuł i struktura repo (2026-11-09)
+- **Tytuł gry: „Sell Me This Pen"**. Robi podwójną robotę — jest nazwą i jednocześnie samouczkiem, bo każdy od razu wie o co chodzi. Pierwszy przedmiot w Rolodexie to „The Pen", więc gra dosłownie otwiera się swoim tytułem. Odrzucone: „Coke Call" (zabija użycie w szkole + kolizja ze znakiem Coca-Coli), „The Salesman" (nie do wyszukania przez *Death of a Salesman* i film Farhadiego z 2016), „Dial Tone Dynasty" (abstrakcyjny, nic w nim nie śmieszy).
+- Tytuł siedzi w jednej stałej (`GAME_TITLE` w `constants.ts`), więc kolejna zmiana nazwy to edycja jednej linijki.
+- **Aplikacja przeniesiona do `cold/`**, `PLAN.md` i `PROGRESS.md` zostają w korzeniu repo. Historia gita zachowana (`git mv`). Build i lint przechodzą z nowej lokalizacji.
+
 ### 🔴 Deploy na Vercel — **czeka na Ciebie**
 Jedyny punkt Fazy 0, którego nie mogę domknąć sam: wymaga Twojego logowania.
 ```bash
+cd cold
 npx vercel login
 npx vercel --prod
 ```
+⚠️ Po przeniesieniu aplikacji do podkatalogu trzeba ustawić w projekcie Vercel **Root Directory = `cold`**. Odpalenie komend z wnętrza `cold/` sprawia, że CLI samo to zaproponuje.
+
 Repo jest gotowe (build przechodzi, `.vercel` w `.gitignore`). Daj znać jak przejdzie.
 
 ---
@@ -104,6 +112,8 @@ Repo jest gotowe (build przechodzi, `.vercel` w `.gitignore`). Daj znać jak prz
 | 2026-11-08 | Rangi nie mnożą kasy | Inaczej progresja robi się wykładnicza i balans siada po 20 minutach. |
 | 2026-11-08 | Tokeny `[CLOSED]` / `[HANGUP]` zamiast wykrywania zamknięcia modelem | Tanio, deterministycznie, bez dodatkowego zapytania do LLM. |
 | 2026-11-08 | Grafika generowana w SVG w kodzie, nie pliki PNG | Ostry w każdej rozdzielczości, waży tyle co nic, zmiana koloru to zmiana tokena. |
+| 2026-11-09 | Tytuł: **„Sell Me This Pen"** | Tytuł i samouczek w jednym. Fraza jest stara i niezastrzeżona (banał ze szkoleń sprzedażowych sprzed *Wilka z Wall Street*), więc prawnie czysto — ale świadomie wiąże grę z tym filmem, co przy parodii jest plusem. |
+| 2026-11-09 | Aplikacja w `cold/`, dokumenty projektu w korzeniu | Twoja preferencja. Koszt: Vercel wymaga ustawienia Root Directory. Poza tym zero wpływu. |
 
 ---
 
@@ -115,4 +125,4 @@ Repo jest gotowe (build przechodzi, `.vercel` w `.gitignore`). Daj znać jak prz
 4. Ekran wyniku: rozbicie na 4 kryteria, cytaty, coaching, naliczona prowizja
 5. Friendly error gdy Groq zwróci rate limit (w tonie gry — „rynek się zawalił")
 
-**Zanim zacznę Fazę 1 potrzebuję od Ciebie:** klucz API z https://console.groq.com/keys wklejony do `.env.local` (plik jest w `.gitignore`, klucz nigdzie nie wycieknie).
+**Zanim zacznę Fazę 1 potrzebuję od Ciebie:** klucz API z https://console.groq.com/keys wklejony do `cold/.env.local` (plik jest w `.gitignore`, klucz nigdzie nie wycieknie).

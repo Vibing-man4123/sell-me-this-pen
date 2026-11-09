@@ -2,7 +2,7 @@ import { ItemIcon } from "@/components/art/ItemIcon";
 import { PersonaPortrait } from "@/components/art/PersonaPortrait";
 import { ButtonLink } from "@/components/ui/Button";
 import { Eyebrow, Panel } from "@/components/ui/Panel";
-import { GAME_TITLE, PLAYER_CHARACTER } from "@/lib/game/constants";
+import { GAME_TITLE_LINES, PLAYER_CHARACTER } from "@/lib/game/constants";
 import { PERSONAS } from "@/lib/game/personas";
 import { RANKS } from "@/lib/game/ranks";
 
@@ -14,8 +14,12 @@ export default function TitleScreen() {
       <div className="relative mx-auto flex max-w-5xl flex-col gap-10 px-6 py-14 sm:py-20">
         <header className="text-center">
           <Eyebrow className="text-brass">Est. 1987 &middot; Second floor, above the carpet showroom</Eyebrow>
-          <h1 className="mt-3 font-display text-5xl leading-[0.95] font-black tracking-tight text-foil sm:text-7xl">
-            {GAME_TITLE}
+          <h1 className="mt-3 font-display text-5xl leading-[0.92] font-black tracking-tight text-foil sm:text-7xl">
+            {GAME_TITLE_LINES.map((line) => (
+              <span key={line} className="block">
+                {line}
+              </span>
+            ))}
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-balance text-paper-dim sm:text-lg">
             You are <strong className="text-paper">{PLAYER_CHARACTER}</strong>, a broker with too much
