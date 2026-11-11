@@ -2,11 +2,15 @@ import { ItemIcon } from "@/components/art/ItemIcon";
 import { PersonaPortrait } from "@/components/art/PersonaPortrait";
 import { ButtonLink } from "@/components/ui/Button";
 import { Eyebrow, Panel } from "@/components/ui/Panel";
-import { GAME_TITLE_LINES, PLAYER_CHARACTER } from "@/lib/game/constants";
-import { PERSONAS } from "@/lib/game/personas";
+import { GAME_TITLE_LINES, PLAYER_CHARACTER, STARTER_CALL } from "@/lib/game/constants";
+import { getItem } from "@/lib/game/items";
+import { getPersona, PERSONAS } from "@/lib/game/personas";
 import { RANKS } from "@/lib/game/ranks";
 
 export default function TitleScreen() {
+  const starterPersona = getPersona(STARTER_CALL.personaId);
+  const starterItem = getItem(STARTER_CALL.itemId);
+
   return (
     <main className="relative flex-1 overflow-hidden">
       <div className="pointer-events-none absolute inset-0 vignette" />
@@ -28,15 +32,18 @@ export default function TitleScreen() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <ButtonLink href="/moodboard" variant="gold">
-              Style bible
+            <ButtonLink href={`/call/${STARTER_CALL.personaId}/${STARTER_CALL.itemId}`} variant="gold">
+              Pick up the phone
             </ButtonLink>
             <ButtonLink href="/moodboard#rubric" variant="ghost">
               How you&apos;re graded
             </ButtonLink>
+            <ButtonLink href="/moodboard" variant="ghost">
+              Style bible
+            </ButtonLink>
           </div>
           <p className="mt-4 font-mono text-xs text-paper-muted">
-            Phase 0 build &middot; the phone doesn&apos;t ring yet
+            First call: {starterItem.name} to {starterPersona.name}. The Rolodex opens next.
           </p>
         </header>
 

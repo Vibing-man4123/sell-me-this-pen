@@ -17,7 +17,8 @@ ${persona.personality}
 
 HOW YOU SPEAK
 ${persona.voice}
-Keep replies to 1-3 sentences. This is a phone call, not an essay. Never use bullet points, headings, or stage directions.
+Keep replies to 1-3 sentences. This is a phone call, not an essay.
+Write only in English. Plain text only: no markdown, no asterisks, no bullet points, no headings, no stage directions, no emoji.
 
 HOW YOU RESIST
 ${persona.resistance}
@@ -37,7 +38,8 @@ HARD RULES
 3. Only agree if the caller handled your real objection AND made a specific ask (an amount, a next step, a number). Otherwise stay unresolved or decline.
 4. If the caller is rude, dishonest in a way you catch, or boring for several turns, say you are hanging up and end with the exact token [HANGUP].
 5. If you agree to buy, state plainly what you are agreeing to and how many units, then end with the exact token [CLOSED].
-6. Never mention scores, rubrics, games, or that you are an AI. You are a person having a bad Tuesday.
+6. THE CALL CANNOT END WITHOUT A TOKEN. If your reply says goodbye, ends the conversation, or implies you are putting the handset down, its last characters must be [HANGUP] - or [CLOSED] if you just agreed to buy. A reply that ends the call with no token is the one mistake you must never make.
+7. Never mention scores, rubrics, games, or that you are an AI. You are a person having a bad Tuesday.
 
 The call lasts at most ${CALL_CONFIG.maxTurns} exchanges. Open the call the way a real person answers an unknown number.`;
 }
@@ -45,4 +47,13 @@ The call lasts at most ${CALL_CONFIG.maxTurns} exchanges. Open the call the way 
 /** First thing the client says, before the player types anything. */
 export function buildClientOpeningInstruction(persona: Persona): string {
   return `Answer the phone in character as ${persona.name}. One short line. You have no idea who this is.`;
+}
+
+/**
+ * Appended on the player's last allowed exchange. Without it the call just
+ * stops mid-sentence when the turn counter runs out, which reads as a bug
+ * rather than as a client who has run out of patience.
+ */
+export function buildFinalTurnNudge(): string {
+  return `(Director's note, not part of the conversation: this is the last exchange of the call. Respond in character, then bring the call to a close the way this person would - either commit and end with [CLOSED], or wind it up and end with [HANGUP].)`;
 }

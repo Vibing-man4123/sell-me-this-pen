@@ -3,7 +3,7 @@
 > Plik prowadzony równolegle do `PLAN.md`. `PLAN.md` = co zamierzamy, `PROGRESS.md` = co faktycznie zrobione i jak stoimy z czasem.
 
 **Start projektu:** 2026-11-08
-**Ostatnia aktualizacja:** 2026-11-09
+**Ostatnia aktualizacja:** 2026-11-11
 **Live:** https://sellmethispen.vercel.app
 
 ---
@@ -13,12 +13,12 @@
 | Faza | Zakres | Budżet z planu | Planowany koniec | Status |
 |---|---|---|---|---|
 | **0** | Setup & design | 2–3 dni | 2026-11-10 | ✅ **ZAMKNIĘTA** 2026-11-09 |
-| 1 | Core call loop (MVP) | ~1 tydzień | 2026-11-17 | ⚪ Nie zaczęte |
+| **1** | Core call loop (MVP) | ~1 tydzień | 2026-11-17 | ✅ **ZAMKNIĘTA** 2026-11-11 |
 | 2 | Progression system | ~1 tydzień | 2026-11-24 | ⚪ Nie zaczęte |
 | 3 | Humor & polish treści | ~1 tydzień | 2026-12-01 | ⚪ Nie zaczęte |
 | 4 | Classroom-ready polish | 3–5 dni | 2026-12-06 | ⚪ Nie zaczęte |
 
-**Jak się trzymamy:** przed harmonogramem. Faza 0 miała zająć 2–3 dni, zamknięta w dwóch sesjach (2026-11-08/09), a przy okazji wyprzedziliśmy część roboty z Faz 2–3 (komplet 6 person i 6 przedmiotów zamiast jednego przykładu, drabinka rang, pełny system payoutu). Dzień zapasu w kieszeni. Realistyczny termin grywalnego MVP: **początek grudnia 2026**.
+**Jak się trzymamy:** mocno przed harmonogramem. Faza 1 miała budżet tygodnia (do 17.11), zamknięta w jednej sesji 11.11 — **6 dni zapasu**. Pomogło to, że Faza 0 zostawiła gotowe prompty, rubric i ekonomię: cała ta sesja poszła na hydraulikę i UI, nie na projektowanie. Gra jest od dziś **grywalna od początku do końca**: dzwonisz, rozmawiasz, dostajesz ocenę i kasę. Realistyczny termin pełnego MVP: **koniec listopada 2026**.
 
 Legenda: 🟢 zrobione · 🟡 w trakcie · 🔴 zablokowane · ⚪ nie zaczęte
 
@@ -97,13 +97,76 @@ Domyślny favicon Next.js zastąpiony własnym (`src/app/icon.svg`) — złoty d
 - **Produkcja: https://sellmethispen.vercel.app** — status Ready, build 12–30 s, obie strony (`/` i `/moodboard`) zwracają 200
 - Root Directory ustawiony na `cold` — zadziałało
 - Zweryfikowane na żywo: tytuł, 6 portretów, 6 ikon, rubric, wyliczenie prowizji, własna ikona. Strona waży 73 KB HTML i ładuje się w ~0.34 s — z zapasem pod szkolne Chromebooki.
-- Zmienne środowiskowe: na razie żadne nie są potrzebne (Groq dochodzi w Fazie 1)
+- Zmienne środowiskowe: na tym etapie żadne nie były potrzebne (Groq doszedł w Fazie 1)
 
 **Adresy:** projekt nazywa się `sell-me-this-pen`, produkcja stoi pod **sellmethispen.vercel.app**. Uwaga na pułapkę: przestrzeń `*.vercel.app` jest globalna i pierwszy bierze — `sell-me-this-pen.vercel.app` było już zajęte przez cudzy projekt, dlatego alias jest bez myślników. Wersje z myślnikami NIE są nasze. Stare adresy `cold-roan` i `cold-rodion16` też dalej prowadzą do gry.
 
 ---
 
-## Infrastruktura (stan na 2026-11-09)
+## FAZA 1 — Core call loop (MVP) *(2026-11-11)*
+
+Od tej sesji **gra jest grywalna**: `/` → „Pick up the phone" → rozmowa → ocena → prowizja.
+
+### ✅ Proxy do Groq — `src/lib/server/groq.ts`
+Klucz API żyje wyłącznie w route handlerach, przeglądarka gada tylko z naszym serwerem. Zamiast SDK ręczny `fetch` — używamy jednego endpointu, a dzięki temu taksonomia błędów jest nasza, nie biblioteki: `missing_key` / `rate_limit` / `timeout` / `upstream` / `bad_output`, każdy z flagą `retryable`. Timeout 20 s.
+
+### ✅ `POST /api/call` — jedna wymiana rozmowy
+- Walidacja Zodem, nieznana persona/przedmiot = 400
+- Tokeny `[CLOSED]` / `[HANGUP]` wycinane **po stronie serwera** — do przeglądarki nigdy nie trafiają
+- Limit 12 tur pilnowany na serwerze; na ostatniej turze model dostaje cichą instrukcję domknięcia rozmowy, żeby nie urywała się w pół zdania
+- Pusta odpowiedź modelu traktowana jak błąd, nie jak milczenie klienta
+
+### ✅ `POST /api/judge` — ocena i wypłata
+- Structured output przez `json_schema` ze `strict: true` (Groq pilnuje schematu po swojej stronie)
+- Dodatkowo walidacja Zodem tego, czego schemat nie złapie, **plus kontrola czy `bestLine`/`worstLine` to naprawdę cytaty** z wypowiedzi gracza — jeden retry z konkretną reklamacją
+- Wypłata liczona na serwerze, żeby kwota miała jedno źródło prawdy (Faza 2 będzie ją zapisywać)
+
+### ✅ UI rozmowy — `/call/[personaId]/[itemId]`
+Trasa jest sparametryzowana od razu, więc Rolodex w Fazie 2 tylko do niej podlinkuje. Wszystkie 36 kombinacji prerenderowane (`generateStaticParams`).
+- Nagłówek: portret, trudność, towar z ceną, licznik tur, wskaźnik „ON THE LINE" w kolorze `dialtone`
+- Dymki: klient po lewej za portretem, gracz po prawej na papierze biurowym
+- **Efekt maszyny do pisania** zamiast streamingu z Groq — pełna odpowiedź przychodzi, tokeny są już wycięte, dopiero potem leci litera po literze. Dzięki temu `[CLOSED]` nie ma jak mignąć na ekranie. Respektuje `prefers-reduced-motion`, da się kliknąć i pominąć.
+- Ekran wyniku: 4 paski, cytaty, coaching menedżera, pełna arytmetyka prowizji
+- `error.tsx` jako ostatnia linia obrony — wyjątek w UI nie daje białego ekranu
+
+### ✅ Friendly errors (zweryfikowane na żywo)
+Każdy błąd ma tekst w tonie gry: rate limit to „The market just crashed", padnięta sieć to „Something chewed through the cable in the stairwell again". Techniczny szczegół pokazuje się **tylko** przy błędzie konfiguracji — czyli wtedy, gdy człowiek faktycznie musi coś naprawić. Przy błędach nieodwracalnych nie ma przycisku „Redial", żeby nie kazać graczowi klikać w ścianę.
+
+---
+
+## Pułapki i odkrycia z Fazy 1
+
+**1. Model z `.env` już nie istniał.** `llama-3.3-70b-versatile` został wycofany z Groq — pierwsze zapytanie dostało 404. Konto ma dziś 11 modeli. Po testach:
+- **Klient: `qwen/qwen3.8-27b`** — 0.13–0.6 s, trzyma charakter, zero narzutu na rozumowanie
+- **Sędzia: `openai/gpt-oss-120b`** — model rozumujący, oceny dobrze skalibrowane (trafił w nasze przykłady kalibracyjne z Fazy 0)
+- ⚠️ **`gpt-oss-20b` z limitem 220 tokenów zwrócił pusty string** — przepalił cały budżet na reasoning. Stąd zasada w kodzie: klient nie może być modelem rozumującym, a sędzia dostaje 2500 tokenów zapasu.
+
+**2. Limity Groq są PER MODEL — i to zmienia kalkulację.** Zmierzone: **1000 zapytań/dobę i 8000 tokenów/minutę, osobno dla każdego modelu.** Rozdzielenie klienta i sędziego na dwa różne modele (zrobione w Fazie 0 z zupełnie innego powodu) **podwaja realny zapas**. Ale 8000 TPM to i tak mało: jedna pełna 12-turowa rozmowa to ~13k tokenów, bo historia leci z każdą turą od nowa. Dla jednego gracza OK (człowiek pisze wolno), **dla klasy na jednym kluczu — nie**. To jest teraz **ryzyko nr 1 na Fazę 4**, z konkretnymi liczbami zamiast przeczucia.
+
+**3. Klient nie zawsze emituje token — i to kosztowało $791.** Model potrafi zgodzić się słowami („I'll take two acres, send me the invoice") albo się pożegnać („Goodbye.") **bez** `[CLOSED]`/`[HANGUP]`. Wzmocnienie reguły w promptcie pomogło przy rozłączeniu, ale nie wyleczyło zamykania deala. Ponieważ wynik tokena nadpisywał werdykt sędziego, realnie zamknięta sprzedaż wypłacała 6% „na benzynę". Zmierzone na żywym przykładzie: **$29 zamiast $820**.
+→ **Rozwiązanie:** token wygrywa, gdy padnie (deterministycznie, zgodnie z decyzją z Fazy 0), ale gdy rozmowa skończyła się bez tokena, o `closedDeal` decyduje sędzia czytający transkrypt. Niedeterminizm wpuszczony dokładnie tam, gdzie alternatywą było bycie definitywnie w błędzie.
+
+**4. Ekran wyniku pokazywał arytmetykę, która się nie zgadzała.** Wyświetlaliśmy `scoreFactor` (0.60), a wzór stosuje krzywą z gwarantowanym progiem: `0.3 + 0.7 × score`. Gracz widział `$220 × 1.0 × 0.60 × 1.35`, co daje $178, a dostawał $210. Przy zasadzie „wypłata, którą da się prześledzić" to nie kosmetyka, tylko złamanie obietnicy. Payout zwraca teraz `rate` i `exact`, a ekran pokazuje działanie, które **naprawdę** mnoży się do kwoty, razem z krokiem zaokrąglenia.
+
+**5. `dynamicParams` nie współpracuje z `cacheComponents`.** Build wywala się wprost. Nieznane kombinacje w ścieżce łapie `notFound()` w komponencie i to wystarcza.
+
+**6. ESLint w tym projekcie pilnuje `setState` w efektach.** Maszyna do pisania przeszła na stan wyliczany w renderze + `useSyncExternalStore` do `prefers-reduced-motion`. Wyszło krócej niż pierwsza wersja.
+
+---
+
+## Decyzje z Fazy 1
+
+| Data | Decyzja | Dlaczego |
+|---|---|---|
+| 2026-11-11 | Brak streamingu z Groq; maszyna do pisania po stronie klienta | Tokeny `[CLOSED]`/`[HANGUP]` są wycinane zanim cokolwiek zobaczy gracz. Przy 0.3 s odpowiedzi streaming nic nie kupuje, a ryzykuje mignięciem tokena. |
+| 2026-11-11 | Rozdzielone modele: szybki dla klienta, rozumujący dla sędziego | Latencja tam, gdzie boli (czat), jakość tam, gdzie boli (ocena). Bonus: osobne budżety rate limitu. |
+| 2026-11-11 | Przy braku tokena o zamknięciu decyduje sędzia | Patrz pułapka 3. Determinizm tam, gdzie jest pewny; transkrypt tam, gdzie token zawiódł. |
+| 2026-11-11 | Osobny wynik `walkaway` (gracz sam odkłada słuchawkę) | Rozłączenie z własnej woli po dwóch turach to nie to samo co wyczerpanie 12 tur, a gra pokazywała ten sam komunikat i kłamała graczowi w żywe oczy. |
+| 2026-11-11 | Transkrypt trzymany w przeglądarce i odsyłany co turę | Gra jest jednoosobowa i w pełni lokalna, więc nie ma sesji serwerowej. Serwer ufa transkryptowi — do przemyślenia, **zanim** powstanie wspólny leaderboard. |
+
+---
+
+## Infrastruktura (stan na 2026-11-11)
 
 | Element | Stan |
 |---|---|
@@ -112,11 +175,13 @@ Domyślny favicon Next.js zastąpiony własnym (`src/app/icon.svg`) — złoty d
 | Produkcja | https://sellmethispen.vercel.app (aliasy: `cold-roan`, `cold-rodion16`) |
 | Auto-deploy | ✅ działa — `git push` na `main` buduje i publikuje bez żadnej komendy |
 | Klucz Groq | `cold/.env.local` lokalnie + Vercel: Production / Preview / Development |
+| Modele Groq | **Na Vercelu NIE są ustawione — i tak ma zostać.** `GROQ_CLIENT_MODEL` / `GROQ_JUDGE_MODEL` są opcjonalne, a wartości domyślne w `src/lib/server/groq.ts` to te zweryfikowane 11.11. Produkcja działa bez dodatkowej konfiguracji, a nazwy modeli odczytywane są per zapytanie, więc podmiana w panelu Vercela nie wymaga redeployu. |
 
 **Pułapki, na które się nadziałem — żeby nie powtórzyć:**
 - Przestrzeń `*.vercel.app` jest globalna. `sell-me-this-pen.vercel.app` należy do obcego projektu — zmiana nazwy projektu NIE tworzy aliasu, jeśli nazwa jest zajęta. Weryfikując deploy sprawdzaj treść (`<title>`), nie sam kod 200.
 - Root Directory nie ustawia się sam po przeniesieniu apki do podkatalogu. Deploye z CLI działały, bo odpalane z `cold/`, ale build z GitHuba padłby na braku `package.json` w korzeniu.
 - Prawdziwy klucz nigdy nie idzie do `.env.example` — ten plik jest śledzony przez gita. GitHub Push Protection złapał to i zablokował push; historię trzeba było przepisać i klucz zrotować.
+- Nazwy modeli w `.env` starzeją się po cichu. `llama-3.3-70b-versatile` zniknął z Groq między Fazą 0 a 1 i wyszło to dopiero przy pierwszym realnym zapytaniu. Dlatego kod ma sensowne wartości domyślne, a 404 od Groq jest mapowane na błąd konfiguracji z widocznym komunikatem, a nie na „coś poszło nie tak".
 
 ---
 
@@ -135,12 +200,14 @@ Domyślny favicon Next.js zastąpiony własnym (`src/app/icon.svg`) — złoty d
 
 ---
 
-## Następny krok — FAZA 1 (Core call loop)
+## Następny krok — FAZA 2 (Progression system)
 
-1. Route handler `POST /api/call` — proxy do Groq, klucz tylko po stronie serwera, streaming odpowiedzi klienta
-2. UI czatu: telefon na biurku, dymki, licznik pozostałych tur, wskaźnik „na linii"
-3. Route handler `POST /api/judge` — structured output, walidacja Zodem, retry przy złym JSON-ie
-4. Ekran wyniku: rozbicie na 4 kryteria, cytaty, coaching, naliczona prowizja
-5. Friendly error gdy Groq zwróci rate limit (w tonie gry — „rynek się zawalił")
+1. **Rolodex** — ekran wyboru rozmowy; trasy `/call/[personaId]/[itemId]` już istnieją i są prerenderowane, więc to głównie UI i gating po randze
+2. **Zapis progresji w localStorage** (Zustand jest zainstalowany od Fazy 0): saldo, zarobek życiowy, historia rozmów
+3. **Ranking** — `rankFromEarnings()` i `hasRank()` są gotowe i przetestowane, trzeba je podpiąć pod odblokowywanie treści i ekran awansu
+4. **Lifestyle Shop** — zakupy kosmetyczne, zero wpływu na mechanikę
+5. Podpiąć wypłatę z `/api/judge` pod saldo (dziś kwota jest liczona i pokazywana, ale nigdzie nie ląduje)
 
-**Zanim zacznę Fazę 1 potrzebuję od Ciebie:** klucz API z https://console.groq.com/keys wklejony do `cold/.env.local` (plik jest w `.gitignore`, klucz nigdzie nie wycieknie).
+**Nic nie jest potrzebne ode mnie z zewnątrz** — klucz Groq działa, modele zweryfikowane, deploy stoi.
+
+**Do przemyślenia przed Fazą 4:** 8000 tokenów/minutę na model wystarczy jednemu graczowi, ale nie klasie na jednym kluczu (patrz pułapka 2). Opcje: klucz na ucznia, płatny tier, albo kolejka z komunikatem w tonie gry.

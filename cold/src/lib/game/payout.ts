@@ -22,6 +22,14 @@ export type PayoutBreakdown = {
   grade: string;
   scoreFactor: number;
   unitFactor: number;
+  /**
+   * The commission rate actually applied: base x difficulty x rate = total,
+   * before rounding. The results screen shows this rather than `scoreFactor`,
+   * because `scoreFactor` alone does not multiply out to the payout.
+   */
+  rate: number;
+  /** Pre-rounding total, so the screen can show where the last few dollars went. */
+  exact: number;
   closedDeal: boolean;
   /** Final, rounded dollars added to the player's balance. */
   total: number;
@@ -46,7 +54,8 @@ export function computePayout(
     ? (CLOSE_FLOOR + (1 - CLOSE_FLOOR) * scoreFactor) * unitFactor
     : NO_SALE_RATE * scoreFactor;
 
-  const total = Math.round((item.baseCommission * persona.difficulty * rate) / 10) * 10;
+  const exact = item.baseCommission * persona.difficulty * rate;
+  const total = Math.round(exact / 10) * 10;
 
   return {
     base: item.baseCommission,
@@ -55,6 +64,8 @@ export function computePayout(
     grade: gradeLabel(weighted),
     scoreFactor,
     unitFactor,
+    rate,
+    exact,
     closedDeal: verdict.closedDeal,
     total,
     rows: CRITERIA.map((c) => ({

@@ -1,8 +1,9 @@
 import type { Item } from "../game/items";
 import type { Persona } from "../game/personas";
 import { CRITERIA, RUBRIC, VERDICT_JSON_SCHEMA } from "../game/rubric";
+import { OUTCOME_COPY, type CallOutcome, type Turn } from "../game/transcript";
 
-export type Turn = { role: "broker" | "client"; content: string };
+export type { Turn };
 
 function renderAnchors(): string {
   return CRITERIA.map((c) => {
@@ -53,7 +54,12 @@ Return ONLY a JSON object matching this schema, with no markdown fence and no co
 ${JSON.stringify(VERDICT_JSON_SCHEMA)}`;
 }
 
-export function buildJudgeUserPrompt(persona: Persona, item: Item, turns: Turn[]): string {
+export function buildJudgeUserPrompt(
+  persona: Persona,
+  item: Item,
+  turns: Turn[],
+  outcome: Exclude<CallOutcome, "open">
+): string {
   const transcript = turns
     .map((t) => `${t.role === "broker" ? "BROKER" : "CLIENT"}: ${t.content}`)
     .join("\n");
@@ -63,6 +69,14 @@ THE CATCH THE BROKER HAD TO TALK AROUND: ${item.catch}
 
 CLIENT: ${persona.name}, ${persona.title}. Difficulty ${persona.difficulty}/3.
 HOW THIS CLIENT RESISTS: ${persona.resistance}
+
+HOW THE CALL ENDED (established fact, not your judgement): ${OUTCOME_COPY[outcome].label}.
+${
+    outcome === "timeout" || outcome === "walkaway"
+      ? `The call ended without the client ever clearly closing or hanging up, so closedDeal is YOURS to decide: set it true only if the client committed in their own words somewhere in the transcript ("put me down for two", "one unit, card on file"), and false if they never did.`
+      : `Set closedDeal to ${outcome === "closed"} to match it.`
+  }
+If the deal closed, unitsSold is whatever the client actually agreed to in the transcript.
 
 TRANSCRIPT
 ${transcript || "(the broker said nothing)"}

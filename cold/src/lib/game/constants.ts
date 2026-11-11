@@ -14,3 +14,10 @@ export const GAME_TITLE = "Sell Me This Pen";
 /** Pre-broken for display type so the hero never wraps somewhere ugly. */
 export const GAME_TITLE_LINES = ["Sell Me", "This Pen"] as const;
 export const PLAYER_CHARACTER = "Jordan Beltford";
+
+/**
+ * The call the title screen opens with, and the game's own tutorial: the title
+ * is the brief. Phase 2's Rolodex will replace this as the way in, but the
+ * route it points at is the same one the Rolodex will use.
+ */
+export const STARTER_CALL = { personaId: "dr-brenda-kalb", itemId: "pen" } as const;
