@@ -166,6 +166,24 @@ Każdy błąd ma tekst w tonie gry: rate limit to „The market just crashed", p
 
 ---
 
+## Dług wizualny — zdiagnozowany 2026-11-11
+
+Design wygląda surowo i **nie jest to wina stylu, tylko tego, że gra go nie używa.** Moodboard z Fazy 0 zaprojektował komplet powierzchni; ekrany rozgrywki wdrożyły może połowę:
+
+| Element stylu | Zdefiniowany w `globals.css` | Używany w grze |
+|---|---|---|
+| `texture-paper` (papier) | ✅ | ✅ panele i dymki gracza |
+| `vignette` (winieta) | ✅ | ✅ wszystkie ekrany |
+| `text-foil` (złota folia) | ✅ | ✅ tytuł, kwota wypłaty |
+| `shadow-desk` | ✅ | ✅ panele |
+| **`texture-felt` (sukno biurka)** | ✅ | ❌ **nigdzie poza moodboardem** |
+
+Sukno to najmocniejszy „biurkowy" element palety i leży nieużywane — dlatego ekran rozmowy czyta się jak zwykły ciemny czat, a nie jak biurko maklera o 21:00. Do tego portrety person (najlepszy asset w projekcie) są na ekranie rozmowy pomniejszone do 44–56 px.
+
+**Wniosek:** to nie jest przeprojektowanie od zera, tylko dociągnięcie ekranów do stylu, który już istnieje i jest udokumentowany na `/moodboard`.
+
+---
+
 ## Infrastruktura (stan na 2026-11-11)
 
 | Element | Stan |
@@ -210,4 +228,5 @@ Każdy błąd ma tekst w tonie gry: rate limit to „The market just crashed", p
 
 **Nic nie jest potrzebne ode mnie z zewnątrz** — klucz Groq działa, modele zweryfikowane, deploy stoi.
 
-**Do przemyślenia przed Fazą 4:** 8000 tokenów/minutę na model wystarczy jednemu graczowi, ale nie klasie na jednym kluczu (patrz pułapka 2). Opcje: klucz na ucznia, płatny tier, albo kolejka z komunikatem w tonie gry.
+**Limity Groq — świadomie odłożone (decyzja 2026-11-11).** 8000 tokenów/minutę na model wystarczy jednemu graczowi, ale nie klasie na jednym kluczu (patrz pułapka 2). **Nie zajmujemy się tym teraz.** To projekt pasjonacki, gra nie jest publiczna, a dla pojedynczej osoby limit jest niewyczuwalny. Temat wraca dopiero, gdy gra ma realnie trafić do więcej niż jednej pary rąk — wtedy do rozważenia klucz na ucznia, płatny tier albo kolejka. Liczby są zmierzone i zapisane wyżej, więc decyzja będzie szybka, kiedy przyjdzie jej czas.
+Dopóki to nie nastąpi, jedyne co jest potrzebne, to przyjazny komunikat przy wyczerpaniu limitu — a ten **już działa** („The market just crashed").
