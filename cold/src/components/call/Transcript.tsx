@@ -14,7 +14,7 @@ function Bubble({ speaker, children }: { speaker: Turn["role"]; children: React.
       className={
         isBroker
           ? "texture-paper max-w-[85%] rounded-card rounded-br-none border border-brass/60 px-4 py-2.5 text-ink sm:max-w-[75%]"
-          : "max-w-[85%] rounded-card rounded-bl-none border border-brass/40 bg-navy-700 px-4 py-2.5 text-paper sm:max-w-[75%]"
+          : "max-w-[85%] rounded-card rounded-bl-none border border-brass/40 bg-sky-pale px-4 py-2.5 text-ink sm:max-w-[75%]"
       }
     >
       <p className="text-[0.95rem] leading-relaxed whitespace-pre-wrap">{children}</p>
@@ -60,7 +60,7 @@ export function Listening({ persona }: { persona: Persona }) {
         title={persona.name}
         className="shrink-0 rounded-full border-2 border-brass/50"
       />
-      <div className="rounded-card rounded-bl-none border border-brass/40 bg-navy-700 px-4 py-3">
+      <div className="rounded-card rounded-bl-none border border-brass/40 bg-sky-pale px-4 py-3">
         <span className="flex gap-1.5" aria-label={`${persona.name} is speaking`}>
           {[0, 1, 2].map((i) => (
             <span

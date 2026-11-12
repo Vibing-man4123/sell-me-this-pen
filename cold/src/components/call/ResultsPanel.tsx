@@ -28,7 +28,7 @@ function ScoreBar({
     <div>
       <div className="flex items-baseline justify-between gap-2">
         <span className="font-display text-sm font-bold">{label}</span>
-        <span className="font-mono text-xs text-oxblood">
+        <span className="font-mono text-xs text-coral">
           {score}/{SCORE_MAX}
           <span className="ml-2 opacity-60">
             × {weight.toFixed(2)} = {contribution.toFixed(2)}
@@ -37,7 +37,7 @@ function ScoreBar({
       </div>
       <div className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-ink/15">
         <div
-          className="h-full rounded-full bg-oxblood transition-[width] duration-700 ease-out"
+          className="h-full rounded-full bg-coral transition-[width] duration-700 ease-out"
           style={{ width: `${(score / SCORE_MAX) * 100}%` }}
         />
       </div>
@@ -74,13 +74,13 @@ export function ResultsPanel({
   return (
     <div className="flex flex-col gap-5">
       {/* The headline: what happened, and what it paid. */}
-      <Panel tone="navy" className="p-6 text-center">
+      <Panel tone="card" className="p-6 text-center">
         <Eyebrow className="text-brass">{copy.label}</Eyebrow>
-        <p className="mt-1 text-sm text-paper-dim">{copy.note}</p>
+        <p className="mt-1 text-sm text-ink-soft">{copy.note}</p>
         <p className="mt-5 font-display text-5xl font-black text-foil sm:text-6xl">
           {formatMoney(payout.total)}
         </p>
-        <p className="mt-2 font-mono text-xs uppercase tracking-[0.2em] text-paper-muted">
+        <p className="mt-2 font-mono text-xs uppercase tracking-[0.2em] text-ink-faint">
           Commission &middot; {payout.grade} &middot; {payout.weighted.toFixed(2)}/
           {SCORE_MAX} weighted
         </p>
@@ -134,7 +134,7 @@ export function ResultsPanel({
               ))}
               <div className="flex justify-between gap-4 border-t border-brass/40 pt-2 text-sm">
                 <dt className="font-semibold uppercase tracking-wider">Paid</dt>
-                <dd className="font-semibold text-oxblood">{formatMoney(payout.total)}</dd>
+                <dd className="font-semibold text-coral">{formatMoney(payout.total)}</dd>
               </div>
             </dl>
             {/* The rate is a curve, not a single number, so it is spelled out. */}

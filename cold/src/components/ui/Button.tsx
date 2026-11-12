@@ -1,18 +1,20 @@
 import Link from "next/link";
 
 /**
- * The only button in the game. Chunky, slightly 3D, like a key on a desk phone.
+ * The only button in the game. Chunky and slightly 3D, like a key on a desk
+ * phone - the offset shadow is the whole effect, so it stays a hard colour
+ * rather than a blur.
  */
 
-type Variant = "gold" | "ghost" | "oxblood";
+type Variant = "gold" | "ghost" | "coral";
 
 const VARIANTS: Record<Variant, string> = {
   gold:
     "bg-gold text-ink border-brass hover:bg-gold-light active:translate-y-0.5 shadow-[0_4px_0_0_var(--color-brass)] active:shadow-[0_1px_0_0_var(--color-brass)]",
   ghost:
-    "bg-navy-800 text-paper border-brass/60 hover:border-gold hover:text-gold-light active:translate-y-0.5 shadow-[0_4px_0_0_#060d16] active:shadow-[0_1px_0_0_#060d16]",
-  oxblood:
-    "bg-oxblood text-paper border-oxblood-light hover:bg-oxblood-light active:translate-y-0.5 shadow-[0_4px_0_0_#4a141d] active:shadow-[0_1px_0_0_#4a141d]",
+    "bg-shell text-ink border-brass/60 hover:border-gold hover:text-brass active:translate-y-0.5 shadow-[0_4px_0_0_var(--color-sky-deep)] active:shadow-[0_1px_0_0_var(--color-sky-deep)]",
+  coral:
+    "bg-coral text-sand border-coral-light hover:bg-coral-light active:translate-y-0.5 shadow-[0_4px_0_0_#b83a53] active:shadow-[0_1px_0_0_#b83a53]",
 };
 
 const BASE =

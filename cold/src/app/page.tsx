@@ -25,8 +25,8 @@ export default function TitleScreen() {
               </span>
             ))}
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-balance text-paper-dim sm:text-lg">
-            You are <strong className="text-paper">{PLAYER_CHARACTER}</strong>, a broker with too much
+          <p className="mx-auto mt-5 max-w-2xl text-balance text-ink-soft sm:text-lg">
+            You are <strong className="text-ink">{PLAYER_CHARACTER}</strong>, a broker with too much
             hair gel and no discernible licence. Cold-call strangers. Sell them things that should not be
             for sale. Get graded on how you did it. Spend the commission on a lifestyle nobody asked for.
           </p>
@@ -42,12 +42,12 @@ export default function TitleScreen() {
               Style bible
             </ButtonLink>
           </div>
-          <p className="mt-4 font-mono text-xs text-paper-muted">
+          <p className="mt-4 font-mono text-xs text-ink-faint">
             First call: {starterItem.name} to {starterPersona.name}. The Rolodex opens next.
           </p>
         </header>
 
-        <Panel tone="navy" className="p-6">
+        <Panel tone="card" className="p-6">
           <Eyebrow className="text-brass">Tonight&apos;s call sheet</Eyebrow>
           <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
             {PERSONAS.map((persona) => (
@@ -59,8 +59,8 @@ export default function TitleScreen() {
                   className="mx-auto rounded-card border-2 border-ink/80"
                 />
                 <figcaption className="mt-2">
-                  <span className="block font-display text-sm font-bold text-paper">{persona.name}</span>
-                  <span className="block font-mono text-[0.6rem] uppercase tracking-widest text-paper-muted">
+                  <span className="block font-display text-sm font-bold text-ink">{persona.name}</span>
+                  <span className="block font-mono text-[0.6rem] uppercase tracking-widest text-ink-faint">
                     {persona.title}
                   </span>
                 </figcaption>
@@ -82,7 +82,7 @@ export default function TitleScreen() {
                 "Get promoted, meet worse clients",
               ].map((step, i) => (
                 <li key={step} className="flex gap-3">
-                  <span className="font-mono text-xs font-semibold text-oxblood">
+                  <span className="font-mono text-xs font-semibold text-coral">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span>{step}</span>
@@ -97,7 +97,7 @@ export default function TitleScreen() {
               {RANKS.map((rank) => (
                 <li key={rank.id}>
                   <span className="font-display font-bold">{rank.name}</span>
-                  <span className="ml-2 font-mono text-[0.68rem] text-oxblood">
+                  <span className="ml-2 font-mono text-[0.68rem] text-coral">
                     ${rank.threshold.toLocaleString("en-US")}
                   </span>
                   <span className="block text-ink/70">{rank.flavour}</span>
@@ -109,7 +109,7 @@ export default function TitleScreen() {
 
         <footer className="flex items-center justify-center gap-4 opacity-70">
           <ItemIcon icon="rolodex" size={40} />
-          <p className="max-w-md font-mono text-[0.66rem] leading-relaxed text-paper-muted">
+          <p className="max-w-md font-mono text-[0.66rem] leading-relaxed text-ink-faint">
             A parody. {PLAYER_CHARACTER} is a fictional caricature and is not based on, affiliated with,
             or endorsed by any real broker, convicted or otherwise.
           </p>

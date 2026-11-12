@@ -9,7 +9,7 @@ import type { PortraitKey } from "@/lib/game/personas";
  * Adding a persona means adding one entry to PORTRAITS, not drawing a new face.
  */
 
-const INK = "#141210";
+const INK = "#22364a";
 const SKIN = {
   light: "#f0c9a4",
   mid: "#d9a271",
@@ -18,16 +18,16 @@ const SKIN = {
 } as const;
 
 const PALETTE = {
-  navy: "#122a44",
-  navyDeep: "#0b1a2b",
-  felt: "#1b3a2d",
-  oxblood: "#6f1f2b",
-  brass: "#b08d57",
-  gold: "#c9a227",
-  goldLight: "#e8c25a",
-  paper: "#f3e8d5",
-  paperDim: "#ddcdb0",
-  mint: "#4ec9a8",
+  skyDeep: "#3a9bc9",
+  skyDeeper: "#2a7ba8",
+  palm: "#297d64",
+  coral: "#d91d40",
+  brass: "#98662b",
+  gold: "#f0922f",
+  goldLight: "#ffc061",
+  sand: "#fdf4e6",
+  sandDim: "#f1e2c9",
+  mint: "#117d68",
   white: "#fbf7ef",
   grey: "#9c9c96",
 } as const;
@@ -140,7 +140,7 @@ function Mouth({ expression }: { expression: Expression }) {
     case "breezy":
       return (
         <>
-          <path d="M70 89 q10 9 20 0" fill={PALETTE.oxblood} {...stroke} />
+          <path d="M70 89 q10 9 20 0" fill={PALETTE.coral} {...stroke} />
           <path d="M70 89 h20" fill="none" {...thinStroke} />
         </>
       );
@@ -172,8 +172,8 @@ const PORTRAITS: Record<PortraitKey, PortraitSpec> = {
     neckwear: (
       <>
         <path d="M66 118 l14 14 l14 -14" fill="none" {...stroke} />
-        <circle cx="52" cy="78" r="3" fill={PALETTE.paper} {...thinStroke} />
-        <circle cx="108" cy="78" r="3" fill={PALETTE.paper} {...thinStroke} />
+        <circle cx="52" cy="78" r="3" fill={PALETTE.sand} {...thinStroke} />
+        <circle cx="108" cy="78" r="3" fill={PALETTE.sand} {...thinStroke} />
       </>
     ),
     props: (
@@ -191,7 +191,7 @@ const PORTRAITS: Record<PortraitKey, PortraitSpec> = {
   crypto: {
     backdrop: PALETTE.gold,
     skin: "mid",
-    garment: PALETTE.navyDeep,
+    garment: PALETTE.skyDeeper,
     expression: "smirk",
     hair: (
       <>
@@ -218,14 +218,14 @@ const PORTRAITS: Record<PortraitKey, PortraitSpec> = {
       <>
         {/* sunglasses parked on the forehead */}
         <path d="M54 48 h52" fill="none" {...stroke} />
-        <rect x="56" y="42" width="20" height="11" rx="3" fill={PALETTE.navyDeep} {...thinStroke} />
-        <rect x="84" y="42" width="20" height="11" rx="3" fill={PALETTE.navyDeep} {...thinStroke} />
+        <rect x="56" y="42" width="20" height="11" rx="3" fill={PALETTE.skyDeeper} {...thinStroke} />
+        <rect x="84" y="42" width="20" height="11" rx="3" fill={PALETTE.skyDeeper} {...thinStroke} />
       </>
     ),
   },
 
   grandma: {
-    backdrop: PALETTE.oxblood,
+    backdrop: PALETTE.coral,
     skin: "light",
     garment: "#b0718a",
     expression: "fond",
@@ -248,7 +248,7 @@ const PORTRAITS: Record<PortraitKey, PortraitSpec> = {
         {/* cardigan + pearls */}
         <path d="M66 118 l14 16 l14 -16" fill="none" {...stroke} />
         {[62, 70, 79, 88, 96].map((x, i) => (
-          <circle key={x} cx={x} cy={i === 2 ? 128 : 123 + Math.abs(2 - i) * 1.5} r="4" fill={PALETTE.paper} {...thinStroke} />
+          <circle key={x} cx={x} cy={i === 2 ? 128 : 123 + Math.abs(2 - i) * 1.5} r="4" fill={PALETTE.sand} {...thinStroke} />
         ))}
       </>
     ),
@@ -265,9 +265,9 @@ const PORTRAITS: Record<PortraitKey, PortraitSpec> = {
   },
 
   cfo: {
-    backdrop: PALETTE.navy,
+    backdrop: PALETTE.skyDeep,
     skin: "light",
-    garment: PALETTE.paperDim,
+    garment: PALETTE.sandDim,
     expression: "scowl",
     hair: (
       <>
@@ -285,10 +285,10 @@ const PORTRAITS: Record<PortraitKey, PortraitSpec> = {
     ),
     neckwear: (
       <>
-        {/* shirt collar + oxblood tie */}
+        {/* shirt collar + coral tie */}
         <path d="M66 116 l14 12 l14 -12" fill={PALETTE.white} {...stroke} />
-        <path d="M80 128 l-7 -7 h14 z" fill={PALETTE.oxblood} {...stroke} />
-        <path d="M80 128 l-6 32 h12 z" fill={PALETTE.oxblood} {...stroke} />
+        <path d="M80 128 l-7 -7 h14 z" fill={PALETTE.coral} {...stroke} />
+        <path d="M80 128 l-6 32 h12 z" fill={PALETTE.coral} {...stroke} />
       </>
     ),
   },
@@ -327,7 +327,7 @@ const PORTRAITS: Record<PortraitKey, PortraitSpec> = {
   },
 
   doomsday: {
-    backdrop: PALETTE.felt,
+    backdrop: PALETTE.palm,
     skin: "mid",
     garment: "#5d6b4a",
     expression: "suspicious",
@@ -348,10 +348,10 @@ const PORTRAITS: Record<PortraitKey, PortraitSpec> = {
         {/* trucker cap */}
         <path
           d="M48 54 C48 32 62 24 80 24 C98 24 112 32 112 54 Z"
-          fill={PALETTE.oxblood}
+          fill={PALETTE.coral}
           {...stroke}
         />
-        <path d="M44 54 h72 q6 0 6 5 h-84 q0 -5 6 -5 z" fill={PALETTE.oxblood} {...stroke} />
+        <path d="M44 54 h72 q6 0 6 5 h-84 q0 -5 6 -5 z" fill={PALETTE.coral} {...stroke} />
         <path d="M80 26 v26" fill="none" {...thinStroke} />
       </>
     ),

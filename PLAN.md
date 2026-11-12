@@ -35,10 +35,10 @@ Gracz jako karykatura cwanego brokera prowadzi cold calle sprzedając coraz absu
 ## Grafika — "human touch"
 Cel: uniknąć sterylnego, generycznego AI-artu. Dwie opcje, wybierz tę, na którą masz czas/skill:
 
-- **Opcja A (polecana pod portfolio):** proste płaskie ilustracje wektorowe rysowane samemu w Figmie/Illustratorze — portrety 5-6 person klientów (powtarzane z drobnymi zmianami: inny ubiór/mimika), awatar gracza, ikony przedmiotów do sprzedania. Ograniczona paleta (np. navy/gold/czerwień — estetyka "Wall Street lata 90'"), gruby outline, mało detali = szybciej do zrobienia i spójnie wygląda. To dodatkowo pokazuje umiejętność designu, nie tylko kodu.
+- **Opcja A — WYBRANA, patrz `ART.md`:** proste płaskie ilustracje wektorowe rysowane samemu w Figmie/Illustratorze — portrety 5-6 person klientów (powtarzane z drobnymi zmianami: inny ubiór/mimika), awatar gracza, ikony przedmiotów do sprzedania. Ograniczona paleta (np. navy/gold/czerwień — estetyka "Wall Street lata 90'"), gruby outline, mało detali = szybciej do zrobienia i spójnie wygląda. To dodatkowo pokazuje umiejętność designu, nie tylko kodu.
 - **Opcja B:** szkice rysowane ręcznie (nawet na papierze), zeskanowane/przerysowane w prostym wektorze — mocniejszy "human touch", ale wolniejsze.
 
-Mini moodboard do zrobienia na starcie: paleta kolorów + 1 przykładowy portret person + styl UI (np. estetyka "biurka maklera" — papierowe teksturowane tło, winietki, przyciski jak stare telefony).
+Mini moodboard: ✅ zrobiony jako żywa strona `/moodboard`. Paleta „Miami Daylight", komplet 6 portretów i 6 ikon, typografia, prymitywy UI — wszystko renderowane z danych gry, więc nie rozjedzie się z kodem.
 
 ---
 
@@ -69,7 +69,7 @@ Mini moodboard do zrobienia na starcie: paleta kolorów + 1 przykładowy portret
 #### Grafiki — pełny brief w `ART.md`
 Kierunek ustalony 2026-11-12: **Flash / Newgrounds ok. 2003** zamiast powściągliwego flat vectora z Fazy 0. Przerysowane proporcje, wyolbrzymiona mimika, gruba kreska.
 
-**Decyzja do podjęcia PRZED robieniem grafik: paleta.** Porównanie trzech wariantów (obecna „Night Desk" vs „Miami Daylight" vs „Miami Sunset") stoi na `/moodboard/palette`. Powód terminu: paleta w kodzie to ~15 tokenów CSS + 2 bloki stałych w SVG, czyli zmiana tania. Ale **30 gotowych grafik w złych kolorach to już nie jest tanie** — dlatego paleta musi być zaklepana pierwsza.
+**Paleta: ✅ zdecydowana i wdrożona 2026-11-12 — „Miami Daylight".** Jasny interfejs: błękit nieba, kremowa biel, złocisty pomarańcz, mosiądz deco. Gra przeszła z ciemnego UI na jasny, a scena z „biuro o 21:00" na Miami, późne popołudnie. Komplet tokenów widać na `/moodboard`, a blok do wklejania do narzędzia graficznego siedzi w `ART.md`. Rysować prosto pod te wartości.
 
 **Braki wykryte przy pisaniu briefu (2026-11-12) — rzeczy, o których plan milczał, a bez których gra nie wygląda jak gra:**
 

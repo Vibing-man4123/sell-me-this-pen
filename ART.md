@@ -11,12 +11,13 @@
 
 Zmiana względem moodboardu z Fazy 0. Tamten projektował powściągliwy flat vector; idziemy w stronę głośnej, przerysowanej kreski z czasów Flasha.
 
-**Co zostaje:** cała paleta kolorów, tekstury CSS (papier, sukno, winieta, złota folia), typografia, konstrukcja „jedna głowa, różnicowana dodatkami".
-**Co się zmienia:** proporcje (przerysowane), mimika (wyolbrzymiona), grubość kreski (grubsza), nasycenie postaci (mocniejsze), chrom UI (fazowane guziki, cienie).
+**Co zostaje:** tekstury CSS (papier, sukno, winieta, złota folia), typografia, konstrukcja „jedna głowa, różnicowana dodatkami".
+**Co się zmienia:** proporcje (przerysowane), mimika (wyolbrzymiona), grubość kreski (grubsza), nasycenie postaci (mocniejsze), chrom UI (fazowane guziki, cienie) — **oraz paleta: od 2026-11-12 jest to Miami Daylight**, jasny interfejs zamiast granatowego biura o 21:00. Patrz blok palety niżej.
 
 **Czego świadomie NIE robimy:** gradientów na postaciach, blurów, tekstur rastrowych, fotorealizmu, „ładnego" minimalizmu. Ma być trochę toporne. To jest cecha, nie wada.
 
-⚠️ Jak to wejdzie, strona `/moodboard` zdezaktualizuje się i trzeba ją będzie przerobić — ona renderuje się z danych gry, więc to kwestia podmiany ilustracji, nie przepisywania.
+✅ Paleta jest już wdrożona w kodzie i na `/moodboard` — rysuj prosto pod nią, nic nie trzeba przeliczać.
+⚠️ Ilustracje na moodboardzie to nadal stary zestaw przefarbowany na nowe kolory. Zastąpią je te, które powstaną z tego briefu.
 
 ---
 
@@ -55,39 +56,52 @@ FORMAT: SVG. Flat colour shapes only. No embedded raster, no filter effects.
 
 ## BLOK PALETY — wklejaj razem z blokiem stylu
 
+Paleta **Miami Daylight**, zatwierdzona 2026-11-12. Wszystkie wartości są już wdrożone w kodzie gry i widoczne na `/moodboard` — to nie jest propozycja, tylko stan faktyczny. Każda para tekst/tło przechodzi kontrast WCAG AA.
+
 ```
-PALETTE - use these, plus pure black and white. Nothing else.
+PALETTE - Miami Daylight. Use these, plus pure black and white. Nothing else.
 
-WORLD / UI (established - do not change these):
-  ink           #141210   every outline, deepest shadow
-  navy-900      #070f1a   deepest background
-  navy-800      #0b1a2b   panel background
-  navy-700      #122a44   raised panel
-  navy-600      #1b3c5e   highlight on navy
-  felt          #1b3a2d   desk pad green
-  oxblood       #6f1f2b   leather, danger, score bars
-  oxblood-light #96303d   leather highlight
-  brass         #b08d57   hardware, trim, phone fittings
-  gold          #c9a227   money, the good stuff
-  gold-light    #e8c25a   gold highlight
-  paper         #f3e8d5   paper, documents, broker speech bubbles
-  paper-dim     #ddcdb0   paper shadow
-  dialtone      #4ec9a8   RESERVED: the live-call indicator and nothing else
+This is a BRIGHT, daylight palette. Mid-1980s Miami: art deco, sun, chrome
+and bad money. The interface is light, not dark.
 
-CHARACTERS (new - Flash cartoons need more saturation than the UI):
-  skin-light    #f6c9a0
-  skin-mid      #d79a6a
-  skin-deep     #8d5524
-  hot-red       #e23b2e   ties, lips, alarm
-  hot-blue      #2f7fd1   shirts, denim
-  hot-yellow    #f2c33d   loud suits, bleached hair
-  hot-purple    #7a4fa3   bad fashion decisions
-  sick-green    #7fb23f   crypto, wellness drinks, dollar-sign eyes
+GROUND AND SURFACES:
+  sky        #bfe3f2   the world behind everything - afternoon sky
+  sky-pale   #e3f3fb   raised surfaces, the client's speech bubble
+  sky-deep   #3a9bc9   deeper water blue, shadows under buttons
+  shell      #ffffff   clean white panels
+  sand       #fdf4e6   paper, documents, the broker's speech bubble
+  sand-dim   #f1e2c9   paper in shadow
 
-Shade any colour with a 15% darker version of the same hue. Never black.
+LINE AND TEXT:
+  ink        #22364a   EVERY outline, and all primary text. Not black.
+  ink-soft   #4b6375   secondary text
+  ink-faint  #5f7384   captions
+
+METAL AND MONEY:
+  brass      #98662b   deco trim, hardware, hairlines
+  gold       #f0922f   golden orange - primary action, money, the good stuff
+  gold-light #ffc061   highlight on gold
+
+HEAT AND GREEN:
+  coral      #d91d40   warnings, hang-ups, score bars
+  coral-light#ff7d93   highlight on coral
+  palm       #297d64   palm green, success, the desk pad
+  dialtone   #117d68   RESERVED: the live-call indicator and nothing else
+
+CHARACTERS (louder - Flash cartoons need saturation the UI does not):
+  skin-light  #f6c9a0
+  skin-mid    #d79a6a
+  skin-deep   #8d5524
+  hot-pink    #ff5f9e   Miami pink - signage, lips, bad blazers
+  hot-cyan    #2ec5d9   pastel deco cyan
+  hot-yellow  #ffd23f   loud suits, bleached hair
+  hot-purple  #8f5bc4   bad fashion decisions
+  lime        #9ed64f   crypto, wellness drinks, dollar-sign eyes
+
+IMPORTANT: outlines are ink (#22364a), never pure black. On a bright palette
+pure black outlines go muddy and heavy.
+Shade any colour with a 15% darker version of the same hue. Never with black.
 ```
-
----
 
 # A. POSTACIE
 
@@ -218,7 +232,7 @@ smoothie in a glass jar at all times. A second phone on a tripod pointed at
 her, because she might be filming this. Crystal necklace. Serene expression
 that is doing a lot of work.
 
-Palette: push beige/sage here rather than the loud hots - her whole brand
+Palette: push cream/sage here rather than the loud hots - her whole brand
 is "clean", and the restraint is the joke.
 
 _neutral - serene, head tilted, performing listening
@@ -235,8 +249,9 @@ peaches. Deeply suspicious, well-read in the wrong directions, lonely
 enough to stay on the line. Convinced you are a federal agent.
 
 Wild grey beard. Surplus military jacket over a vest. Trucker cap.
-Squinting with deep suspicion. Dim bunker lighting implied by strong
-contrast on one side of the face only - but still as flat shapes, no blur.
+Squinting with deep suspicion. Harsh overhead bunker lighting implied by strong contrast on one side of
+the face only - but still as flat shapes, no blur. He is the one character
+who is not in the sunshine, and that is the joke.
 Shelves of canned peaches behind him. A corded phone with the cord stretched
 very far. Optional: a hand-drawn conspiracy map pinned up behind.
 
@@ -280,8 +295,8 @@ CANVAS: 600 x 500, transparent.
 
 A 1980s office desk phone, seen at a 3/4 angle from slightly above.
 Chunky beige-and-brass body, heavy square push-buttons, coiled cord.
-Built like a brick. Brass (#b08d57) fittings, paper/beige (#f3e8d5) body,
-ink outlines. It should look heavy enough to hurt someone.
+Built like a brick. Brass (#98662b) fittings, sand (#fdf4e6) body,
+ink outlines (#22364a). It should look heavy enough to hurt someone.
 
 DELIVER 3 STATES, identical body, cord and angle:
   phone_idle    - handset resting in the cradle, cord hanging slack
@@ -308,26 +323,30 @@ Flat shapes only. Suggest depth with overlapping and value, never blur.
 ### D1 — Biurko (ekran rozmowy) ⭐ TRZECI DO ZROBIENIA
 
 ```
-A stockbroker's desk at 9pm, seen from the broker's own chair looking down
-and slightly forward. First-person - we never see the player's body.
+A stockbroker's desk in Miami, late afternoon, seen from the broker's own
+chair looking down and slightly forward. First-person - we never see the
+player's body.
 
-Dark green felt desk pad (#1b3a2d) filling the lower two thirds, with a
-worn leather edge. Scattered on it: a rolodex, a coffee ring stain, a
-half-eaten sandwich, loose paper (#f3e8d5), a cigar in a glass ashtray,
-a brass desk lamp throwing one hard pool of light from the upper left.
-Behind and above: dark navy office (#0b1a2b), a window with city lights as
-simple yellow squares, a wall clock reading just past nine.
+Green felt desk pad (#297d64) filling the lower two thirds, with a worn
+leather edge. Scattered on it: a rolodex, a coffee ring stain, a half-eaten
+sandwich, loose paper (#fdf4e6), a cigar in a glass ashtray, a brass desk
+lamp that is switched off because it is daylight.
 
-Everything slightly too cluttered. This man is not well.
+Behind and above: a wide window filling the wall, bright sky (#bfe3f2),
+two or three palm trees, a sliver of ocean, pastel art-deco buildings in
+sand and hot-pink. A wall clock reading just past four.
+
+Everything slightly too cluttered. This man is not well, but the weather
+is lovely.
 ```
 
 ### D2 — Ekran tytułowy
 
 ```
-Same office, but pulled back and heroic. Low angle looking up at the desk
-and the window behind it, city skyline beyond, dramatic lamp light.
-Empty chair, waiting. Leave the upper third clear and uncluttered - the
-logo goes there.
+Same office, pulled back and heroic. Low angle looking up at the desk and
+the huge window behind it: palms, ocean, deco skyline, sun low and golden.
+Empty leather chair, waiting, turned slightly toward us.
+Leave the upper third clear and uncluttered - the logo goes there.
 ```
 
 ---
@@ -340,9 +359,9 @@ CANVAS: 1200 x 600, transparent.
 Wordmark: "SELL ME THIS PEN", stacked on two lines - "SELL ME" over
 "THIS PEN".
 
-Heavy condensed display letterforms with a thick black outline and a chunky
-offset drop shadow in oxblood (#6f1f2b). Gold-to-brass vertical foil fill
-(#e8c25a to #b08d57). Slight upward arc, confident and tacky. A hard white
+Heavy condensed display letterforms with a thick ink outline (#22364a) and
+a chunky offset drop shadow in hot-pink (#ff5f9e). Gold foil fill running
+from #ffc061 down to #f0922f. Slight upward arc, confident and tacky. A hard white
 specular streak across the upper third of the letters.
 
 An actual pen may cross the wordmark diagonally like a sword.
@@ -350,7 +369,7 @@ An actual pen may cross the wordmark diagonally like a sword.
 This is a Flash game title card from 2003 and it should be unashamed.
 
 Also deliver a 512 x 512 square version for the browser tab icon, legible
-at 32px - likely just a gold pen on a navy circle.
+at 32px - likely just a gold pen on a sky-blue circle.
 ```
 
 ---
@@ -365,9 +384,9 @@ award that someone is nonetheless very proud of.
 
 | Ranga | Próg | Brief |
 |---|---|---|
-| `rank-intern` | $0 | `A folding table with one wobbly leg and a paper nameplate taped to it. Rendered as a proud emblem, which is the joke. Dull brass.` |
-| `rank-junior` | $2.5k | `A desk phone and an office chair crossed like heraldic swords. Brass with a thin gold edge.` |
-| `rank-shark` | $15k | `A shark in a suit jacket and tie, head and shoulders, grinning. Oxblood and brass.` |
+| `rank-intern` | $0 | `A folding table with one wobbly leg and a paper nameplate taped to it. Rendered as a proud emblem, which is the joke. Dull brass (#98662b).` |
+| `rank-junior` | $2.5k | `A desk phone and an office chair crossed like heraldic swords. Brass (#98662b) with a thin gold edge.` |
+| `rank-shark` | $15k | `A shark in a suit jacket and tie, head and shoulders, grinning. Coral (#d91d40) and brass.` |
 | `rank-wolf` | $60k | `A wolf head howling, wearing sunglasses, with a telephone handset clenched in its teeth. Gold.` |
 | `rank-legend` | $250k | `A gold bust of Jordan Beltford on a marble plinth, laurel wreath, one gleam. Absurdly overblown. Full gold with gold-light highlights.` |
 
@@ -381,7 +400,7 @@ Zakupy czysto kosmetyczne, zero wpływu na mechanikę. Każdy ma dwa stany, bo s
 CANVAS: 320 x 320, transparent. Single object, 3/4 angle, catalogue style.
 DELIVER 2 VARIANTS of each:
   _owned  - full colour
-  _locked - the same shape in flat navy-700 (#122a44) silhouette with the
+  _locked - the same shape in flat sky-deep (#3a9bc9) silhouette with the
             standard ink outline, no interior detail
 ```
 
@@ -413,18 +432,18 @@ CANVAS: as noted. Transparent.
 ui-button-set   600 x 200. A chunky Flash-era button in three states:
                 rest, hover, pressed. Thick ink outline, hard bevel, a
                 flat white gloss shape across the top half, offset drop
-                shadow. Gold (#c9a227) primary and navy secondary versions.
+                shadow. Gold (#f0922f) primary and white/sky secondary versions.
 
 ui-bubble-set   800 x 400. Two speech bubble shapes with pointed tails:
-                one in paper (#f3e8d5) for the broker, one in navy-700
-                for the client. Hand-drawn wobble in the outline, not
+                one in sand (#fdf4e6) for the broker, one in sky-pale
+                (#e3f3fb) for the client. Hand-drawn wobble in the outline, not
                 perfect geometry.
 
 ui-frame        900 x 600. An ornate panel frame - brass corners, a thin
                 double rule, slightly uneven. Must work as a 9-slice
                 (corners fixed, edges repeatable).
 
-fx-sold-stamp   400 x 300. A "SOLD!" rubber stamp in oxblood, rotated
+fx-sold-stamp   400 x 300. A "SOLD!" rubber stamp in coral (#d91d40), rotated
                 about 15 degrees, with ink bleed and gaps - as if stamped
                 badly on paper.
 
@@ -435,7 +454,7 @@ fx-sweat        200 x 200. Three classic cartoon sweat droplets, for when
                 a call is going badly.
 
 fx-dialtone     400 x 100. Three or four concentric sound-wave arcs in
-                dialtone green (#4ec9a8), to sit beside the live-call
+                dialtone green (#117d68), to sit beside the live-call
                 indicator.
 ```
 

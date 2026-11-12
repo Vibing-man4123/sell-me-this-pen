@@ -1,18 +1,19 @@
 /**
- * Surfaces. `paper` is a memo on the desk (dark ink on cream), `navy` is the
- * office itself. Everything in the game sits on one of these two.
+ * Surfaces. `paper` is a memo on the desk - cream, grained, faintly inset.
+ * `card` is the clean white panel the office furniture sits on. Everything
+ * in the game is one of these two.
  */
 
-type Tone = "paper" | "navy";
+type Tone = "paper" | "card";
 
 const TONES: Record<Tone, string> = {
   paper: "texture-paper text-ink border-brass/70",
-  navy: "bg-navy-800 text-paper border-brass/30",
+  card: "bg-shell text-ink border-brass/40",
 };
 
 export type PanelProps = React.ComponentProps<"div"> & { tone?: Tone };
 
-export function Panel({ tone = "navy", className = "", ...props }: PanelProps) {
+export function Panel({ tone = "card", className = "", ...props }: PanelProps) {
   return (
     <div
       className={`rounded-card border shadow-desk ${TONES[tone]} ${className}`}

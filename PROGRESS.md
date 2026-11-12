@@ -3,7 +3,7 @@
 > Plik prowadzony równolegle do `PLAN.md`. `PLAN.md` = co zamierzamy, `PROGRESS.md` = co faktycznie zrobione i jak stoimy z czasem.
 
 **Start projektu:** 2026-11-08
-**Ostatnia aktualizacja:** 2026-11-11
+**Ostatnia aktualizacja:** 2026-11-12
 **Live:** https://sellmethispen.vercel.app
 
 ---
@@ -189,7 +189,25 @@ Decyzja Twoja: gra ma mieć wczucie flashowej gry z Newgrounds, nie powściągli
 
 Brief na komplet grafik: **`ART.md`** w korzeniu repo — bloki gotowe do kopiowania do narzędzia graficznego, z ustaloną kolejnością robienia (najpierw Jordan + Brenda + telefon jako test kierunku, dopiero potem reszta).
 
-⚠️ Gdy grafiki wejdą, `/moodboard` się zdezaktualizuje i trzeba go będzie przerobić — renderuje się z danych gry, więc to podmiana ilustracji, nie przepisywanie strony.
+### ✅ Paleta: Miami Daylight (wdrożona 2026-11-12)
+Wybrana z trzech wariantów pokazanych na tymczasowej stronie porównawczej (obecna „Night Desk" vs „Miami Daylight" vs „Miami Sunset"), renderowanych na prawdziwym ekranie rozmowy, nie na kwadracikach. Strona spełniła swoją rolę i została usunięta.
+
+**Gra przeszła z ciemnego interfejsu na jasny.** Jasny czyta się jako „zabawne", ciemny jako „poważne" — a to jest parodia. Scena przesunięta z „biuro o 21:00" na Miami, późne popołudnie: boiler roomy z Miami lat 80. to zresztą celniejszy cel parodii niż generyczny Wall Street.
+
+**Przy okazji przepisane nazwy tokenów z kolorowych na rolowe** (`navy-800` → `shell`, `oxblood` → `coral`, `felt` → `palm`, `paper` → `sand`). Powód: paleta odwróciła jasność, więc token `paper` pełnił dwie sprzeczne role naraz — jasny tekst na ciemnym tle (54 użycia) i jasna powierzchnia (6 użyć). Przy odwróceniu te role się rozjeżdżają i trzeba je było rozdzielić (`text-ink` vs `bg-sand`). Nazwy rolowe oznaczają, że następne przemalowanie to już tylko wartości.
+
+| Token | Wartość | Rola |
+|---|---|---|
+| `sky` / `sky-pale` / `sky-deep` | `#bfe3f2` / `#e3f3fb` / `#3a9bc9` | tło świata, powierzchnie wyniesione, cień pod guzikami |
+| `shell` / `sand` / `sand-dim` | `#ffffff` / `#fdf4e6` / `#f1e2c9` | panele, papier, papier w cieniu |
+| `ink` / `ink-soft` / `ink-faint` | `#22364a` / `#4b6375` / `#5f7384` | obrysy i tekst, drugorzędny, podpisy |
+| `brass` / `gold` / `gold-light` | `#98662b` / `#f0922f` / `#ffc061` | trim deco, akcja i kasa, highlight |
+| `coral` / `coral-light` / `palm` | `#d91d40` / `#ff7d93` / `#297d64` | ostrzeżenia, highlight, sukces |
+| `dialtone` | `#117d68` | wyłącznie wskaźnik trwającej rozmowy |
+
+**Pułapka, którą to wyłapało:** odwrócenie jasności cicho psuje kontrast. Kolory, które były akcentami na granacie, na bieli wysiadają — `brass` spadł do **2.92:1**, `dialtone` do **2.96:1**, przy 41 i 6 użyciach. Policzone programowo (zrzutu ekranu nie dało się zrobić, bo rozszerzenie Chrome padło), pięć tokenów pociemnionych z zachowaniem odcienia. **Wszystkie 15 par tekst/tło przechodzi teraz WCAG AA.**
+
+⚠️ Ilustracje SVG nie czytają tokenów CSS — mają własne bloki stałych w `ItemIcon.tsx` i `PersonaPortrait.tsx`, które trzeba było przefarbować osobno. To i tak zostanie zastąpione grafikami z `ART.md`.
 
 ---
 

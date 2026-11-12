@@ -2,26 +2,44 @@
 
 /*
  * Sell Me This Pen - design tokens.
- * Palette: late-80s brokerage at 9pm. Navy walls, brass lamps, green desk pad,
- * cream paper, oxblood leather. Deliberately limited so the hand-drawn flat
- * vector art stays consistent as we add personas.
+ *
+ * Palette: "Miami Daylight" (chosen 2026-11-12, replacing the Phase 0
+ * "brokerage at 9pm" scheme). Sky blue, cream, golden orange, art-deco brass.
+ * A light interface reads as funny where a dark one read as serious, and the
+ * game is a parody - see /moodboard.
+ *
+ * Token names are roles, not colours, so the next repaint is values only.
  */
 @theme {
-  --color-ink: #141210;
-  --color-navy-900: #070f1a;
-  --color-navy-800: #0b1a2b;
-  --color-navy-700: #122a44;
-  --color-navy-600: #1b3c5e;
-  --color-felt: #1b3a2d;
-  --color-oxblood: #6f1f2b;
-  --color-oxblood-light: #96303d;
-  --color-brass: #b08d57;
-  --color-gold: #c9a227;
-  --color-gold-light: #e8c25a;
-  --color-paper: #f3e8d5;
-  --color-paper-dim: #ddcdb0;
-  --color-paper-muted: #a89778;
-  --color-dialtone: #4ec9a8;
+  /* Text and outlines. `ink` is every illustration stroke and all body copy. */
+  --color-ink: #22364a;
+  --color-ink-soft: #4b6375;
+  --color-ink-faint: #5f7384;
+
+  /* The world: sky behind everything, white panels, pale blue raised surfaces. */
+  --color-sky: #bfe3f2;
+  --color-sky-pale: #e3f3fb;
+  --color-sky-deep: #3a9bc9;
+  --color-shell: #ffffff;
+
+  /* Paper: memos, briefs, and anything the broker himself says. */
+  --color-sand: #fdf4e6;
+  --color-sand-dim: #f1e2c9;
+
+  /* Metal and money. */
+  --color-brass: #98662b;
+  --color-gold: #f0922f;
+  --color-gold-light: #ffc061;
+
+  /* Heat: warnings, hang-ups, score bars. */
+  --color-coral: #d91d40;
+  --color-coral-light: #ff7d93;
+
+  /* Green: success, the desk pad. */
+  --color-palm: #297d64;
+
+  /* Reserved for the live-call indicator and nothing else. */
+  --color-dialtone: #117d68;
 
   --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
@@ -29,38 +47,41 @@
 
   --radius-card: 0.375rem;
 
-  --shadow-desk: 0 18px 40px -12px rgb(0 0 0 / 0.75);
-  --shadow-inset-paper: inset 0 1px 0 rgb(255 255 255 / 0.35), inset 0 -2px 6px rgb(0 0 0 / 0.12);
+  /* Shadows on a light ground are tinted blue, never neutral black. */
+  --shadow-desk: 0 14px 30px -14px rgb(34 54 74 / 0.45);
+  --shadow-inset-paper: inset 0 1px 0 rgb(255 255 255 / 0.6), inset 0 -2px 6px rgb(34 54 74 / 0.08);
 }
 
 /*
- * Procedural paper grain and a vignette. Generated in CSS rather than shipped
- * as images: the game has to load fast on school Chromebooks.
+ * Procedural paper grain. Generated in CSS rather than shipped as images:
+ * the game has to load fast on school Chromebooks.
  */
 @utility texture-paper {
-  background-color: var(--color-paper);
+  background-color: var(--color-sand);
   background-image:
-    radial-gradient(circle at 20% 15%, rgb(0 0 0 / 0.04) 0 1px, transparent 1px),
-    radial-gradient(circle at 70% 60%, rgb(0 0 0 / 0.035) 0 1px, transparent 1px),
-    radial-gradient(circle at 45% 85%, rgb(0 0 0 / 0.03) 0 1px, transparent 1px),
-    linear-gradient(103deg, rgb(255 255 255 / 0.35), transparent 55%);
+    radial-gradient(circle at 20% 15%, rgb(34 54 74 / 0.05) 0 1px, transparent 1px),
+    radial-gradient(circle at 70% 60%, rgb(34 54 74 / 0.04) 0 1px, transparent 1px),
+    radial-gradient(circle at 45% 85%, rgb(34 54 74 / 0.035) 0 1px, transparent 1px),
+    linear-gradient(103deg, rgb(255 255 255 / 0.5), transparent 55%);
   background-size: 7px 7px, 11px 11px, 13px 13px, 100% 100%;
   box-shadow: var(--shadow-inset-paper);
 }
 
-@utility texture-felt {
-  background-color: var(--color-felt);
+/* The desk pad. Still unused by the game itself - see ART.md. */
+@utility texture-palm {
+  background-color: var(--color-palm);
   background-image:
-    repeating-linear-gradient(45deg, rgb(255 255 255 / 0.018) 0 2px, transparent 2px 4px),
-    repeating-linear-gradient(-45deg, rgb(0 0 0 / 0.05) 0 2px, transparent 2px 4px);
+    repeating-linear-gradient(45deg, rgb(255 255 255 / 0.05) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(-45deg, rgb(34 54 74 / 0.06) 0 2px, transparent 2px 4px);
 }
 
+/* On a light ground the vignette warms the edges instead of darkening them. */
 @utility vignette {
   background-image: radial-gradient(
     ellipse 120% 90% at 50% 0%,
     transparent 0%,
-    rgb(0 0 0 / 0.35) 60%,
-    rgb(0 0 0 / 0.7) 100%
+    rgb(58 155 201 / 0.1) 55%,
+    rgb(58 155 201 / 0.22) 100%
   );
 }
 
@@ -78,12 +99,12 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background-color: var(--color-navy-900);
-  color: var(--color-paper);
+  background-color: var(--color-sky);
+  color: var(--color-ink);
   font-family: var(--font-sans);
 }
 

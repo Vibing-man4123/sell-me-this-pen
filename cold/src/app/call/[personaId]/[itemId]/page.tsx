@@ -50,7 +50,7 @@ export default async function CallPage({ params }: PageProps<"/call/[personaId]/
           <ButtonLink href="/" variant="ghost" className="px-3 py-1.5 text-xs">
             ← Desk
           </ButtonLink>
-          <p className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-paper-muted">
+          <p className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-ink-faint">
             Line 1 &middot; recorded for quality assurance
           </p>
         </div>

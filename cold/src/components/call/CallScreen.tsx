@@ -57,7 +57,7 @@ export function CallScreen({ persona, item }: { persona: Persona; item: Item }) 
   return (
     <div className="flex flex-col gap-4">
       {/* Who you called, what you're selling, how long you have left. */}
-      <Panel tone="navy" className="flex flex-wrap items-center gap-4 p-4">
+      <Panel tone="card" className="flex flex-wrap items-center gap-4 p-4">
         <PersonaPortrait
           portrait={persona.portrait}
           size={56}
@@ -65,8 +65,8 @@ export function CallScreen({ persona, item }: { persona: Persona; item: Item }) 
           className="shrink-0 rounded-card border-2 border-ink/70"
         />
         <div className="min-w-0 flex-1">
-          <p className="font-display text-lg leading-tight font-bold text-paper">{persona.name}</p>
-          <p className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-paper-muted">
+          <p className="font-display text-lg leading-tight font-bold text-ink">{persona.name}</p>
+          <p className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-ink-faint">
             {persona.title} &middot; difficulty ×{persona.difficulty.toFixed(1)}
           </p>
         </div>
@@ -74,7 +74,7 @@ export function CallScreen({ persona, item }: { persona: Persona; item: Item }) 
         <div className="flex items-center gap-2 border-l border-brass/30 pl-4">
           <ItemIcon icon={item.icon} size={32} />
           <div>
-            <p className="font-display text-sm font-bold text-paper">{item.name}</p>
+            <p className="font-display text-sm font-bold text-ink">{item.name}</p>
             <p className="font-mono text-[0.62rem] text-brass">
               ${item.unitPrice.toLocaleString("en-US")} / unit
             </p>
@@ -90,13 +90,13 @@ export function CallScreen({ persona, item }: { persona: Persona; item: Item }) 
               </span>
             </span>
           ) : (
-            <span className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-paper-muted">
+            <span className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-ink-faint">
               {phase === "ringing" ? "Dialling" : "Call ended"}
             </span>
           )}
           <p
             className={`font-mono text-xs ${
-              turnsLeft <= CALL_CONFIG.warnAtRemaining ? "text-oxblood-light" : "text-paper-muted"
+              turnsLeft <= CALL_CONFIG.warnAtRemaining ? "text-coral" : "text-ink-faint"
             }`}
           >
             {turnsLeft} {turnsLeft === 1 ? "exchange" : "exchanges"} left
@@ -105,14 +105,14 @@ export function CallScreen({ persona, item }: { persona: Persona; item: Item }) 
       </Panel>
 
       {/* The call itself. */}
-      <Panel tone="navy" className="p-0">
+      <Panel tone="card" className="p-0">
         <div
           ref={scroller}
           className="flex h-[52vh] min-h-80 flex-col gap-3.5 overflow-y-auto p-5"
           onClick={typed.done ? undefined : typed.skip}
         >
           {phase === "ringing" && turns.length === 0 && (
-            <p className="m-auto font-mono text-sm text-paper-muted">
+            <p className="m-auto font-mono text-sm text-ink-faint">
               Ringing{failure ? " — nobody is picking up" : "…"}
             </p>
           )}
@@ -138,22 +138,22 @@ export function CallScreen({ persona, item }: { persona: Persona; item: Item }) 
 
         {/* Failures, in the voice of the building. */}
         {failure && (
-          <div className="border-t border-oxblood-light/50 bg-oxblood/25 p-4">
-            <p className="font-display text-sm font-bold text-paper">{failure.title}</p>
-            <p className="mt-1 text-sm text-paper-dim">{failure.message}</p>
+          <div className="border-t border-coral-light/50 bg-coral/25 p-4">
+            <p className="font-display text-sm font-bold text-ink">{failure.title}</p>
+            <p className="mt-1 text-sm text-ink-soft">{failure.message}</p>
             {failure.retryAfter !== undefined && (
-              <p className="mt-1 font-mono text-xs text-paper-muted">
+              <p className="mt-1 font-mono text-xs text-ink-faint">
                 Switchboard says: about {failure.retryAfter}s.
               </p>
             )}
             {failure.detail && (
-              <p className="mt-2 font-mono text-[0.68rem] break-words text-paper-muted">
+              <p className="mt-2 font-mono text-[0.68rem] break-words text-ink-faint">
                 {failure.detail}
               </p>
             )}
             <div className="mt-3 flex flex-wrap gap-2">
               {failure.retryable && (
-                <Button variant="oxblood" onClick={call.retry}>
+                <Button variant="coral" onClick={call.retry}>
                   Redial
                 </Button>
               )}
@@ -170,7 +170,7 @@ export function CallScreen({ persona, item }: { persona: Persona; item: Item }) 
             <Eyebrow className="text-brass">
               {outcome !== "open" ? OUTCOME_COPY[outcome].label : ""}
             </Eyebrow>
-            <p className="mt-1 text-sm text-paper-dim">
+            <p className="mt-1 text-sm text-ink-soft">
               {outcome !== "open" ? OUTCOME_COPY[outcome].note : ""}
             </p>
             <Button className="mt-4" onClick={call.grade}>
@@ -179,7 +179,7 @@ export function CallScreen({ persona, item }: { persona: Persona; item: Item }) 
           </div>
         ) : phase === "grading" ? (
           <div className="border-t border-brass/30 p-5 text-center">
-            <p className="font-mono text-sm text-paper-muted">
+            <p className="font-mono text-sm text-ink-faint">
               Your manager is listening back to the tape…
             </p>
           </div>
@@ -206,12 +206,12 @@ export function CallScreen({ persona, item }: { persona: Persona; item: Item }) 
                       : "What do you say?"
                 }
                 aria-label="What you say next"
-                className="w-full resize-none rounded-card border border-brass/40 bg-navy-900 px-3.5 py-2.5 text-paper placeholder:text-paper-muted/60 focus:border-gold focus:outline-none disabled:opacity-50"
+                className="w-full resize-none rounded-card border border-brass/40 bg-sky px-3.5 py-2.5 text-ink placeholder:text-ink-faint/60 focus:border-gold focus:outline-none disabled:opacity-50"
               />
               <div className="mt-2 flex items-center justify-between gap-3">
                 <span
                   className={`font-mono text-[0.68rem] ${
-                    remaining < 80 ? "text-oxblood-light" : "text-paper-muted"
+                    remaining < 80 ? "text-coral" : "text-ink-faint"
                   }`}
                 >
                   {remaining < 120 ? `${remaining} characters left` : "Enter to send"}

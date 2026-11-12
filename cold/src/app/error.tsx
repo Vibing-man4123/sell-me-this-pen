@@ -18,12 +18,12 @@ export default function ErrorBoundary({
   return (
     <main className="relative flex flex-1 items-center justify-center p-6">
       <div className="pointer-events-none absolute inset-0 vignette" />
-      <Panel tone="navy" className="relative max-w-lg p-8 text-center">
+      <Panel tone="card" className="relative max-w-lg p-8 text-center">
         <Eyebrow className="text-brass">Building-wide fault</Eyebrow>
         <h1 className="mt-2 font-display text-3xl font-black text-foil">
           Something in the office caught fire
         </h1>
-        <p className="mt-3 text-paper-dim">
+        <p className="mt-3 text-ink-soft">
           Not the good kind of fire. Nobody is hurt, the commission is safe, and the phones
           come back as soon as someone resets the breaker.
         </p>
@@ -34,7 +34,7 @@ export default function ErrorBoundary({
           </ButtonLink>
         </div>
         {error.digest && (
-          <p className="mt-5 font-mono text-[0.68rem] text-paper-muted">
+          <p className="mt-5 font-mono text-[0.68rem] text-ink-faint">
             Incident {error.digest}
           </p>
         )}
