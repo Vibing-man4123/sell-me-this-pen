@@ -182,6 +182,15 @@ Sukno to najmocniejszy „biurkowy" element palety i leży nieużywane — dlate
 
 **Wniosek:** to nie jest przeprojektowanie od zera, tylko dociągnięcie ekranów do stylu, który już istnieje i jest udokumentowany na `/moodboard`.
 
+### Zmiana kierunku: Flash / Newgrounds (2026-11-12)
+Decyzja Twoja: gra ma mieć wczucie flashowej gry z Newgrounds, nie powściągliwego flat vectora z Fazy 0. Dobry ruch — parodia cwanego brokera znosi przesadę lepiej niż elegancja.
+
+**Paleta i tekstury zostają**, zmienia się język rysunku: przerysowane proporcje, wyolbrzymiona mimika, grubsza kreska, mocniejsze nasycenie na postaciach, fazowany chrom UI. Dzięki temu robota z Fazy 0 nie idzie do kosza.
+
+Brief na komplet grafik: **`ART.md`** w korzeniu repo — bloki gotowe do kopiowania do narzędzia graficznego, z ustaloną kolejnością robienia (najpierw Jordan + Brenda + telefon jako test kierunku, dopiero potem reszta).
+
+⚠️ Gdy grafiki wejdą, `/moodboard` się zdezaktualizuje i trzeba go będzie przerobić — renderuje się z danych gry, więc to podmiana ilustracji, nie przepisywanie strony.
+
 ---
 
 ## Infrastruktura (stan na 2026-11-11)
