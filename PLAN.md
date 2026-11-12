@@ -28,7 +28,7 @@ Gracz jako karykatura cwanego brokera prowadzi cold calle sprzedając coraz absu
 | Persystencja progresji | **localStorage** (MVP) | brak potrzeby backendu/bazy na start — gra działa w pełni client-side |
 | Leaderboard (stretch) | **Supabase (darmowy tier)** | jeśli chcecie wspólną tablicę wyników w klasie |
 | Hosting | **Vercel (darmowy tier)** | deploy jedną komendą, szybkie ładowanie na szkolnych Chromebookach |
-| Grafika | patrz sekcja niżej | "human touch" — nie generyczny AI-art |
+| Grafika | SVG rysowany ręcznie, brief w `ART.md` | "human touch" — nie generyczny AI-art. Inline SVG w komponentach: ostre w każdej rozdzielczości, waży tyle co nic, kolory z tokenów. |
 
 ---
 
@@ -65,6 +65,23 @@ Mini moodboard do zrobienia na starcie: paleta kolorów + 1 przykładowy portret
 - Pisanie: lista absurdalnych przedmiotów, osobowości person, teksty rankingów/shopu w tonie parodii
 - Przejście graficzne: portrety person, ikony, tła/tekstury
 - (opcjonalnie) sfx telefonu/biura dla humoru
+
+#### Grafiki — pełny brief w `ART.md`
+Kierunek ustalony 2026-11-12: **Flash / Newgrounds ok. 2003** zamiast powściągliwego flat vectora z Fazy 0. Przerysowane proporcje, wyolbrzymiona mimika, gruba kreska.
+
+**Decyzja do podjęcia PRZED robieniem grafik: paleta.** Porównanie trzech wariantów (obecna „Night Desk" vs „Miami Daylight" vs „Miami Sunset") stoi na `/moodboard/palette`. Powód terminu: paleta w kodzie to ~15 tokenów CSS + 2 bloki stałych w SVG, czyli zmiana tania. Ale **30 gotowych grafik w złych kolorach to już nie jest tanie** — dlatego paleta musi być zaklepana pierwsza.
+
+**Braki wykryte przy pisaniu briefu (2026-11-12) — rzeczy, o których plan milczał, a bez których gra nie wygląda jak gra:**
+
+| Brak | Dlaczego to problem |
+|---|---|
+| **Jordan Beltford nie istnieje jako grafika** | Jest w stałej `PLAYER_CHARACTER`, ekran tytułowy o nim opowiada, gracz się w niego wciela — i nigdzie go nie widać. To twarz gry. |
+| **Telefon nie istnieje** | Centralny rekwizyt całej gry. To przez jego brak ekran rozmowy czyta się jak zwykły czat, a nie jak biurko maklera. |
+| **Tło biurka nie istnieje** | Ekran rozmowy to dziś płaski granat. Moodboard zaprojektował sukno, lampę i bałagan na biurku — nic z tego nie weszło. |
+| **Miny person** | Gra **wie**, jak idzie rozmowa (opór / zmiękczenie / zamknięcie), a twarz klienta na to nie reaguje. Najtańszy sposób na „wczucie": 3 miny zamiast 1. |
+| **`texture-felt` nieużywane** | Sukno biurka zdefiniowane w `globals.css` i użyte wyłącznie na moodboardzie. Najmocniejszy „biurkowy" element palety leży odłogiem. |
+
+**Kolejność robienia (z `ART.md`):** najpierw TYLKO Jordan + Brenda (3 miny) + telefon jako test kierunku → pokazać → dopiero potem reszta. Trzy assety w złym stylu to strata, trzydzieści to katastrofa.
 
 ### Faza 4 — Classroom-ready polish (3-5 dni)
 - Test na słabszym sprzęcie (Chromebooki szkolne) — szybki ładowanie, brak loginu wymaganego
