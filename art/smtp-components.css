@@ -1,0 +1,36 @@
+/* Sell Me This Pen - component styles. Values come from tokens.css (--ink, --gold ...). */
+.smtp-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border:3px solid var(--ink);
+  border-radius:var(--radius-btn);font:700 14px/18px var(--font-sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);
+  cursor:pointer;position:relative;isolation:isolate;transition:transform .06s,box-shadow .06s;background:var(--gold);box-shadow:var(--shadow-btn-gold)}
+.smtp-btn::before{content:"";position:absolute;left:8px;right:8px;top:5px;height:38%;border-radius:10px 10px 4px 4px;background:var(--shell);opacity:.45;pointer-events:none;z-index:-1}
+.smtp-btn:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 8px 0 0 var(--brass)}
+.smtp-btn:active{transform:translateY(5px);box-shadow:0 1px 0 0 var(--brass)}
+.smtp-btn:active::before{opacity:0}
+.smtp-btn:focus-visible{outline:3px solid var(--hot-pink);outline-offset:3px}
+.smtp-btn:disabled{opacity:.45;pointer-events:none}
+.smtp-btn--ghost{background:var(--shell);box-shadow:var(--shadow-btn-ghost)}
+.smtp-btn--ghost:hover{background:var(--sky-pale);box-shadow:0 8px 0 0 var(--sky-deep)}
+.smtp-btn--ghost:active{box-shadow:0 1px 0 0 var(--sky-deep)}
+.smtp-btn--coral{background:var(--coral);color:var(--sand);box-shadow:var(--shadow-btn-coral)}
+.smtp-btn--coral:hover{background:var(--coral-light);color:var(--ink);box-shadow:0 8px 0 0 #b8183a}
+
+.smtp-bubble{max-width:78%;padding:10px 16px;border:3px solid var(--ink);border-radius:var(--radius-bubble);font:400 15px/23px var(--font-sans);color:var(--ink);position:relative}
+.smtp-bubble--client{background:var(--sky-pale);border-bottom-left-radius:4px;align-self:flex-start}
+.smtp-bubble--broker{background:var(--sand);border-bottom-right-radius:4px;align-self:flex-end}
+.smtp-eyebrow{font:500 11px/14px var(--font-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint)}
+.smtp-live{display:inline-flex;align-items:center;gap:8px;color:var(--dialtone);font:600 11px/14px var(--font-mono);letter-spacing:.2em;text-transform:uppercase}
+.smtp-live::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--dialtone);box-shadow:0 0 0 3px var(--shell),0 0 0 5px var(--dialtone);animation:smtp-pulse 1.2s infinite}
+@keyframes smtp-pulse{50%{opacity:.35}}
+
+/* The CRT. Put the chat inside .smtp-monitor__screen; the monitor image sits ON TOP so stickers overlap the chat. */
+.smtp-monitor{position:relative;aspect-ratio:900/780;width:100%}
+.smtp-monitor__screen{position:absolute;left:11.11%;top:10.77%;width:77.78%;height:58.46%;border-radius:3.14%/4.82%;overflow:hidden;background:var(--cream);z-index:1;display:flex;flex-direction:column}
+.smtp-monitor__img{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+.smtp-monitor__glare{position:absolute;left:11.11%;top:10.77%;width:77.78%;height:58.46%;z-index:2;pointer-events:none}
+.smtp-titlebar{display:flex;align-items:center;gap:12px;padding:8px 14px;background:var(--gold);border-bottom:3px solid var(--ink);font:600 13px/18px var(--font-mono);color:var(--ink)}
+.smtp-titlebar img{width:44px;height:44px;border:3px solid var(--ink);border-radius:50%;background:var(--sky)}
+
+.smtp-paper{background:var(--sand);border:3px solid var(--ink);border-radius:var(--radius-card);box-shadow:var(--shadow-sticker);padding:14px 16px;color:var(--ink);font:400 14px/21px var(--font-sans)}
+.smtp-ring{animation:smtp-shake .12s infinite alternate}
+@keyframes smtp-shake{from{transform:rotate(-2deg) translateY(0)}to{transform:rotate(2deg) translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){.smtp-ring,.smtp-live::before{animation:none}}
