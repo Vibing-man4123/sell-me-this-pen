@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" stroke="#22364a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+<title>Shark</title>
+<circle cx="128" cy="128" r="116" fill="#d91d40"/>
+<circle cx="128" cy="128" r="100" fill="none" stroke-width="4" stroke="#98662b"/>
+<path d="M60 150 Q100 60 190 110 Q170 130 196 160 Q120 150 60 150z" fill="#3a9bc9"/><path d="M96 110 l8 -26 l16 22" fill="#3a9bc9"/><path d="M140 148 l16 40 l16 -40z" fill="#d91d40"/><path d="M110 138 h40" fill="none" stroke="#ffffff" stroke-width="6"/><circle cx="130" cy="120" r="5" fill="#22364a"/>
+</svg>

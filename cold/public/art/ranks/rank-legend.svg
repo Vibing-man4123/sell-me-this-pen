@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" stroke="#22364a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+<title>Legend</title>
+<circle cx="128" cy="128" r="116" fill="#ffc061"/>
+<circle cx="128" cy="128" r="100" fill="none" stroke-width="4" stroke="#f0922f"/>
+<rect x="84" y="176" width="88" height="26" fill="#fdf4e6"/><path d="M100 176 q-6 -50 28 -50 q34 0 28 50z" fill="#f0922f"/><circle cx="128" cy="100" r="30" fill="#f0922f"/><path d="M92 92 q-14 40 20 56 M164 92 q14 40 -20 56" fill="none" stroke="#297d64" stroke-width="10"/><path d="M178 60 l6 12 l12 6 l-12 6 l-6 12 l-6 -12 l-12 -6 l12 -6z" fill="#ffffff" stroke-width="4"/>
+</svg>

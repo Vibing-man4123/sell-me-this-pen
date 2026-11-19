@@ -44,24 +44,24 @@ Mini moodboard: ✅ zrobiony jako żywa strona `/moodboard`. Paleta „Miami Day
 
 ## Harmonogram (orientacyjnie, tempo: kilka h/tydzień — do dostosowania)
 
-### Faza 0 — Setup & design (2-3 dni)
+### Faza 0 — Setup & design (2-3 dni) ✅ 2026-11-09
 - Scaffold Next.js + TS + Tailwind, deploy szkieletu na Vercel
 - Zdefiniowanie schematu oceny (JSON rubric) i struktury promptów person
 - Moodboard/styl graficzny (paleta, 1 przykładowa ilustracja)
 
-### Faza 1 — Core call loop (MVP) (~1 tydzień)
+### Faza 1 — Core call loop (MVP) (~1 tydzień) ✅ 2026-11-11
 - Serverless proxy do Groq (klucz API bezpieczny po stronie serwera)
 - UI czatu z jedną personą i jednym przedmiotem
 - LLM-sędzia ze structured output + ekran wyniku (breakdown)
 - Przelicznik kasy z wyniku
 
-### Faza 2 — Progression system (~1 tydzień)
+### Faza 2 — Progression system (~1 tydzień) ✅ 2026-11-19
 - Rolodex: 8-10 kombinacji przedmiot×persona na start
 - System rankingów odblokowujący nowe calle
 - Lifestyle Shop (kosmetyczne zakupy, bez wpływu na mechanikę)
 - Zapis progresji w localStorage
 
-### Faza 3 — Humor & polish treści (~1 tydzień)
+### Faza 3 — Humor & polish treści (~1 tydzień) ✅ 2026-11-19 (kod; finalna grafika po stronie właściciela)
 - Pisanie: lista absurdalnych przedmiotów, osobowości person, teksty rankingów/shopu w tonie parodii
 - Przejście graficzne: portrety person, ikony, tła/tekstury
 - (opcjonalnie) sfx telefonu/biura dla humoru

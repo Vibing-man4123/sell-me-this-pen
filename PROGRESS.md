@@ -3,7 +3,7 @@
 > Plik prowadzony równolegle do `PLAN.md`. `PLAN.md` = co zamierzamy, `PROGRESS.md` = co faktycznie zrobione i jak stoimy z czasem.
 
 **Start projektu:** 2026-11-08
-**Ostatnia aktualizacja:** 2026-11-12
+**Ostatnia aktualizacja:** 2026-11-19
 **Live:** https://sellmethispen.vercel.app
 
 ---
@@ -14,11 +14,11 @@
 |---|---|---|---|---|
 | **0** | Setup & design | 2–3 dni | 2026-11-10 | ✅ **ZAMKNIĘTA** 2026-11-09 |
 | **1** | Core call loop (MVP) | ~1 tydzień | 2026-11-17 | ✅ **ZAMKNIĘTA** 2026-11-11 |
-| 2 | Progression system | ~1 tydzień | 2026-11-24 | ⚪ Nie zaczęte |
+| **2** | Progression system | ~1 tydzień | 2026-11-24 | ✅ **ZAMKNIĘTA** 2026-11-19 (5 dni przed planem) — ⚠️ jeszcze nie scommitowana ani nie wdrożona, czeka na właściciela |
 | 3 | Humor & polish treści | ~1 tydzień | 2026-12-01 | ⚪ Nie zaczęte |
 | 4 | Classroom-ready polish | 3–5 dni | 2026-12-06 | ⚪ Nie zaczęte |
 
-**Jak się trzymamy:** mocno przed harmonogramem. Faza 1 miała budżet tygodnia (do 17.11), zamknięta w jednej sesji 11.11 — **6 dni zapasu**. Pomogło to, że Faza 0 zostawiła gotowe prompty, rubric i ekonomię: cała ta sesja poszła na hydraulikę i UI, nie na projektowanie. Gra jest od dziś **grywalna od początku do końca**: dzwonisz, rozmawiasz, dostajesz ocenę i kasę. Realistyczny termin pełnego MVP: **koniec listopada 2026**.
+**Jak się trzymamy:** mocno przed harmonogramem. Faza 1 zamknięta 2026-11-11 (6 dni zapasu), a Fazy 2 i 3 obie zamknięte 2026-11-19 — Faza 2 pięć dni przed planowanym 24.11, Faza 3 ponad dwa tygodnie przed planowanym 01.12 (od strony kodu; finalna grafika czeka na właściciela). Gra jest **grywalna od początku do końca**, z progresją, sklepem, humorem i dźwiękiem. Zmiany Faz 2-3 nie są jeszcze scommitowane ani wdrożone. Zostaje Faza 4 (classroom-ready polish).
 
 Legenda: 🟢 zrobione · 🟡 w trakcie · 🔴 zablokowane · ⚪ nie zaczęte
 
@@ -211,6 +211,122 @@ Wybrana z trzech wariantów pokazanych na tymczasowej stronie porównawczej (obe
 
 ---
 
+## FAZA 2 — Progression system *(2026-11-19)*
+
+### ✅ Grafika z `art/` wpięta jako szablon
+Pliki SVG z `art/` trafiły do `cold/public/art/` (postacie w 3 nastrojach, telefon, rekwizyty, tła, FX, logo, UI). Wszystkie ścieżki siedzą w jednej mapie `src/lib/art/assets.ts` — właściciel podmienia pliki pod tymi samymi nazwami i nic w kodzie się nie zmienia. `PortraitKey` usunięty (zastąpiony `PersonaPortrait` czytającym z mapy).
+
+### ✅ Zapis progresji — `src/lib/store/progress.ts`
+Zustand + `persist` (localStorage, `skipHydration` + `useHydrated()`, żeby serwer i pierwszy render klienta były identyczne). Saldo, zarobek życiowy, historia (limit 50), `highestRankSeen`, `owned`. Wersja zapisu **v3** z łańcuchem migracji v1 → v2 → v3 (nikt nie dostaje awansu wstecz, nikt nie traci salda).
+
+### ✅ Wypłata → saldo
+`recordCall` księguje wypłatę z `/api/judge`; idempotentne po id rozmowy (odświeżenie wyników nie płaci dwa razy). Ranga liczona z zarobku życiowego, nigdy z salda — wydawanie nie cofa awansu.
+
+### ✅ Rolodex — `/rolodex`
+Wybór klienta, potem przedmiotu; najlepszy wynik per para; zablokowane pozycje widoczne, ale nieaktywne („Unlocks at …”).
+
+### ✅ Gating po randze + `CallGate`
+`src/lib/game/unlocks.ts` to jedyne źródło prawdy (`unlockedAt` na personie i przedmiocie; rozmowa wymaga obu). `CallGate` blokuje wejście na `/call/...` wpisane z ręki.
+
+### ✅ Awans
+Ekran wyników pokazuje moment awansu tylko wtedy, gdy `highestRankSeen` faktycznie rośnie.
+
+### ✅ Lifestyle Shop — `/shop`
+7 przedmiotów z `ART.md` sekcja G, ceny 400–90 000, część za rangą (`src/lib/game/shop.ts`). `buy(id)` używa `spend()`; odmawia przy: nieznane id, już kupione, ranga za niska, brak środków. **Zero wpływu na mechanikę.** Kupione rzeczy widać na „półce z trofeami” (tytuł, Rolodex, sklep). Linki ze strony tytułowej i z Rolodexa. ⚠️ Grafiki sklepu to **proste placeholdery** (`public/art/shop/shop-<id>.svg`: kolorowa tabliczka z glifem) — do podmiany przez właściciela pod tymi samymi nazwami.
+
+### ✅ Playtest w przeglądarce (2026-11-19)
+Headless: Chrome + `playwright-core`, **wszystkie 8 sprawdzeń przeszło**:
+- odblokowania po randze (Rolodex)
+- `CallGate` blokuje wpisany z ręki adres
+- prawdziwa rozmowa + wypłata zaksięgowana **dokładnie raz**
+- awans pokazany **dokładnie raz**
+- zakup w sklepie + ochrona przed podwójnym kliknięciem
+- migracja zapisu v1 → v3
+- brak poziomego scrolla przy 390 px
+- layout OK przy 1366×768
+
+### ✅ Bug: `/api/judge` zwracał 502 (naprawiony 2026-11-19)
+**Przyczyna:** tryb `json_schema` ze `strict: true` po stronie Groq odrzucał odpowiedzi (HTTP 400 `json_validate_failed`), gdy `bestLine` / `worstLine` przekraczały `maxLength` 240 — model nie panuje nad długością cytatu, a Groq twardo egzekwuje limit.
+**Naprawa:**
+- limity (`stripBounds` w `rubric.ts`) są wycinane ze schematu wysyłanego do Groq
+- `normalizeVerdict` przycina / dopasowuje wartości **po stronie serwera**, więc kontrakt dla reszty gry się nie zmienia
+- jeden ograniczony retry (600 ms) dla `upstream` / `bad_output`
+- logowanie błędów po stronie serwera (wcześniej 502 był niemy)
+- **10/10 powtórzeń** na zapisanych transkryptach przechodzi
+
+### ✅ Drobne poprawki z playtestu
+- **„Redial" po nieudanej ocenie** ponownie ocenia **ten sam transkrypt** (przycisk „Try grading again"), zamiast kazać gadać od nowa; wypłata nadal księgowana raz.
+- **Ostrzeżenie Suspense w Next 16** na trasie `/call` — `CallBody` owinięty w `Suspense`, strona dalej prerenderowana.
+- **Kontrast** na panelu awansu i w Rolodexie poprawiony.
+
+### Decyzja ekonomiczna (2026-11-19): ekonomia bez zmian
+- Zamknięta rozmowa „Solid" na poziomie Intern płaci **~$170–520** → Junior Broker po **~5–15 rozmowach**.
+- Przegrane rozmowy płacą ~0 **z założenia** (współczynnik 0.06).
+- Rangi dalej **nie mnożą** kasy.
+- Do rewizji po **playteście w klasie**.
+- Luka Wolf → Legend (**$190k**) jest świadomie aspiracyjna.
+
+### ⚠️ Znane ograniczenie
+Sędzia potrafi zwrócić uzasadnione **429** przy gwałtownym użyciu (gpt-oss: 8000 TPM). **Nadal odłożone** do czasu, gdy gra będzie publiczna (patrz decyzja z 2026-11-11 niżej).
+
+### Faza 2 — ZAMKNIĘTA 2026-11-19
+Zamknięta 5 dni przed planowanym 2026-11-24. **Stan repo:** zmiany Fazy 2 **nie są jeszcze scommitowane ani wdrożone** — czekają na właściciela.
+**Poza zakresem Fazy 2 (przeniesione na ścieżkę grafiki, niczego nie blokują):** ikony przedmiotów, odznaki rang (`rank-*`), prawdziwa grafika sklepu (w tym warianty `_locked`; dziś zablokowane = szary placeholder CSS).
+
+---
+
+## FAZA 3 — Humor & polish treści *(2026-11-19)*
+
+### ✅ Treść i humor przepisane
+- **Persony, przedmioty, rangi, sklep, teksty wyników** przepisane w tonie parodii. Przedmioty mają teraz fakty i wady (`facts`/`defects`), które trafiają do briefu przed rozmową i do promptu klienta.
+- **Głos „Vic"** — trener/manager w notatkach po rozmowie.
+- **Prompt klienta:** blok `HUMOR` + język bezpieczny dla klasy (zero przekleństw, zamienniki w stylu „fudge muffins", bez prawdziwych marek i osób).
+
+### ✅ Niezawodność zamknięcia rozmowy
+- **HARD RULE 3:** jeśli gracz obsłużył prawdziwą obiekcję ORAZ złożył konkretną prośbę, klient musi powiedzieć tak i zakończyć `[CLOSED]` (koniec ze „muszę to przemyśleć" w kółko).
+- **Anty-powtórzenia:** reguła 7 w prompcie (nigdy nie powtarzaj wcześniejszej linii — eskaluj lub zmień obiekcję) plus tani bezpiecznik w `/api/call`: jeśli odpowiedź jest identyczna z wcześniejszą linią klienta, jedna powtórka żądania z uwagą reżysera.
+- **Kai Mercer (intern, trudność 1.4)** miał praktycznie niezamykalną personę. Zachowana komedia (krypto, aplikacja o uczuciach roślin), ale doszła ścieżka „tak": po grzecznym „tylko prawdziwe pieniądze" przypomina sobie Venmo i ~40 USD ze sprzedaży ring lighta; zmiękcza go scarcity/„wizjoner" + mała, konkretna prośba. Test na żywo: dobry pitch + prośba o 2 sztuki = `[CLOSED]`; chamski pitch i „jesteś spłukany" = nadal open.
+
+### ✅ Grafika wpięta
+- Jordan w trzech nastrojach (grin/panic/rich), pieczątki (SOLD! itd.), efekty ring/dialtone/sweat/cash, odznaki rang (`RankBadge`), większy portret klienta.
+- Placeholdery SVG przedmiotów i rang w `public/art/items` i `public/art/ranks`; id z `ART.md` (moon/ostrich/vowel) zmapowane przez `Item.icon`.
+- Catchphrase persony na Rolodexie, fakty o przedmiocie w briefie.
+
+### ✅ SFX
+Web Audio, bez plików (ring, pickup, ka-ching, puzon, pieczątka), z zapamiętywanym wyciszeniem (`MuteToggle`). Dźwięki są no-op do pierwszego gestu użytkownika (pointerdown/keydown), więc zniknął spam „AudioContext was not allowed to start" od blipów maszyny do pisania.
+
+### ✅ Screeny po zmianie przezroczystości cash-burst
+Wyniki z awansem (1366×768 i 390×844) sprawdzone: tekst wypłaty ($57, rozpiska) czytelny.
+
+### Faza 3 — ZAMKNIĘTA 2026-11-19 (od strony kodu)
+**Finalna grafika należy do właściciela:** przerysować pliki o tych samych nazwach — postacie, przedmioty, rangi, sklep oraz warianty `_locked`. **Stan repo:** zmiany nadal **nie są scommitowane ani wdrożone** — czekają na właściciela.
+
+### Faza 4 — kod gotowy, czeka na deploy + test w klasie (2026-11-19)
+**Zrobione:**
+- **Błędy / limity.** Przetestowane na mockach (bez Groqa) wszystkie ścieżki: 429 na `/api/call` i `/api/judge`, 502 upstream, `bad_output`, brak klucza, offline, odpowiedź nie-JSON (np. 504 z bramki), 200 o złym kształcie. Każda ma komunikat w tonie gry w `role="alert"`. Przy 429 z `Retry-After` jest odliczanie (max 60 s) i przycisk „Redial” / „Try grading again” włącza się sam. Awaria oceniania zachowuje rozmowę i pozwala ocenić ponownie (jedna wypłata, dedupe po id). Offline ma teraz własny tekst („No dial tone”), a nie-JSON z serwera — tekst „line went down”. Jedyna nieodwracalna: brak klucza (tylko operator).
+- **Onboarding.** `HowToPlay` (4 karty, natywny `<dialog>`: Esc, pułapka fokusu, powrót fokusu, Skip/Back/Next). Otwiera się sam raz na stronie głównej i w Rolodexie oraz przed pierwszą rozmową (telefon nie dzwoni, dopóki gracz nie zamknie — zero zapytań do Groqa). Link „How to play” na stronie głównej i w Rolodexie. Flaga `tutorialSeen` w store, **wersja persist 4** (migracja v3→v4: kto już grał, nie dostaje tutoriala); `reset()` jej nie kasuje.
+- **Wydajność** (CDP: CPU 4x, ok. Fast 3G, bez cache, prod build). Wszystkie SVG < 50 KB (największe tła ok. 47 KB surowe, ok. 8 KB po kompresji); fonty już self-hosted przez `next/font`; `fetchpriority=high` na logo; portrety w Rolodexie i na rozmowie ładowane eager (były lazy mimo że nad linią zgięcia); `preload` portretu/Jordana na stronie rozmowy; CLS ok. 0.
+  | Strona | LCP przed → po | Transfer | JS | SVG |
+  |---|---|---|---|---|
+  | `/` | 0,76 → 0,77 s | 391 KB | 216 KB (13 plików) | 11 plików / 35 KB |
+  | `/rolodex` | 1,68 → 0,81 s | 364 KB | 201 KB | 15 / 38 KB |
+  | rozmowa | 2,50 → 2,32 s | 355 KB | 201 KB | 9 / 32 KB |
+  Fonty ok. 106 KB. Rozmowa: LCP wiąże hydratacja (bramka rangi), nie sieć.
+- **Responsywność.** 768×1024, 1024×768, 1280×800, 1366×768, 390×844 na `/`, `/rolodex`, `/shop`, rozmowie i wynikach: brak poziomego scrolla. Wiersz wpisywania na rozmowie wcześniej wypadał poza ekran (spód ok. 852 px przy 768 px wysokości); teraz mieści się (748 px) dzięki wysokości transkryptu liczonej z `dvh` i mniejszym portretom na niskich ekranach. Przełącznik dźwięku miał 25 px wysokości, teraz ≥40.
+- **Dostępność.** Wszystkie obrazki mają `alt` (dekoracyjne `alt=""`), przyciski mają nazwy; `prefers-reduced-motion` wyłącza też `animate-pulse`, przejścia i płynne przewijanie; `ink-faint` przyciemniony (#5f7384 → #4d6273) dla kontrastu na tle nieba.
+- Data zamknięcia Fazy 0 w `PLAN.md` (2026-11-09) zweryfikowana z `git log` — poprawna.
+
+**Zostaje:** (1) deploy — commit + push na `main` (Vercel sam zbuduje), wymaga właściciela; (2) prawdziwy test na szkolnym Chromebooku / w klasie (liczby powyżej to emulacja, a limit Groq 8000 tok/min na model przy klasie nadal otwarty — patrz decyzja z 2026-11-11). Fazy 4 **nie** zamykam.
+
+### (Archiwum) Następne kroki — FAZA 4 (z `PLAN.md`)
+- Test wydajności na Chromebooku
+- Przyjazny błąd rate-limitu Groq w tonie gry
+- Responsywność tablet/laptop
+- Tutorial / ekran onboardingu
+- Finalny deploy
+
+---
+
 ## Infrastruktura (stan na 2026-11-11)
 
 | Element | Stan |
@@ -241,17 +357,18 @@ Wybrana z trzech wariantów pokazanych na tymczasowej stronie porównawczej (obe
 | 2026-11-08 | Tokeny `[CLOSED]` / `[HANGUP]` zamiast wykrywania zamknięcia modelem | Tanio, deterministycznie, bez dodatkowego zapytania do LLM. |
 | 2026-11-08 | Grafika generowana w SVG w kodzie, nie pliki PNG | Ostry w każdej rozdzielczości, waży tyle co nic, zmiana koloru to zmiana tokena. |
 | 2026-11-09 | Tytuł: **„Sell Me This Pen"** | Tytuł i samouczek w jednym. Fraza jest stara i niezastrzeżona (banał ze szkoleń sprzedażowych sprzed *Wilka z Wall Street*), więc prawnie czysto — ale świadomie wiąże grę z tym filmem, co przy parodii jest plusem. |
+| 2026-11-19 | Ekonomia bez zmian po Fazie 2 | Closed Solid na Intern ~$170–520 → Junior w ~5–15 rozmowach; przegrane ~0 z założenia (0.06); rangi nie mnożą kasy. Rewizja po playteście w klasie. Luka Wolf → Legend ($190k) aspiracyjna. |
 | 2026-11-09 | Aplikacja w `cold/`, dokumenty projektu w korzeniu | Twoja preferencja. Koszt: Vercel wymaga ustawienia Root Directory. Poza tym zero wpływu. |
 
 ---
 
-## Następny krok — FAZA 2 (Progression system)
+## (Archiwum) Następny krok — FAZA 3 — zrealizowane, patrz wyżej
 
-1. **Rolodex** — ekran wyboru rozmowy; trasy `/call/[personaId]/[itemId]` już istnieją i są prerenderowane, więc to głównie UI i gating po randze
-2. **Zapis progresji w localStorage** (Zustand jest zainstalowany od Fazy 0): saldo, zarobek życiowy, historia rozmów
-3. **Ranking** — `rankFromEarnings()` i `hasRank()` są gotowe i przetestowane, trzeba je podpiąć pod odblokowywanie treści i ekran awansu
-4. **Lifestyle Shop** — zakupy kosmetyczne, zero wpływu na mechanikę
-5. Podpiąć wypłatę z `/api/judge` pod saldo (dziś kwota jest liczona i pokazywana, ale nigdzie nie ląduje)
+Z `PLAN.md`:
+1. **Pisanie** — lista absurdalnych przedmiotów, osobowości person, teksty rang i sklepu w tonie parodii
+2. **Przejście graficzne** — portrety person, ikony, tła/tekstury (brief w `ART.md`; otwarte braki: ikony przedmiotów, odznaki rang, grafika sklepu + `_locked`)
+3. **(Opcjonalnie) sfx** telefonu/biura dla humoru
+4. Przed startem: **scommitować i wdrożyć Fazę 2** (czeka na właściciela)
 
 **Nic nie jest potrzebne ode mnie z zewnątrz** — klucz Groq działa, modele zweryfikowane, deploy stoi.
 

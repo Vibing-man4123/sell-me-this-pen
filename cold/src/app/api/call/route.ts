@@ -109,7 +109,28 @@ export async function POST(request: Request) {
     throw err;
   }
 
-  const { reply, outcome: tokenOutcome } = readTokens(result.text);
+  let { reply, outcome: tokenOutcome } = readTokens(result.text);
+
+  // Models sometimes parrot an earlier line verbatim. One retry, with a nudge.
+  const norm = (t: string) => t.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const said = new Set(turns.filter((t) => t.role !== "broker").map((t) => norm(t.content)));
+  if (reply && said.has(norm(reply))) {
+    try {
+      const retry = await chat({
+        model: MODELS.client(),
+        messages: [
+          ...messages,
+          { role: "system", content: "(Director's note: you just repeated an earlier line word for word. Say something new: escalate or change your objection.)" },
+        ],
+        maxTokens: CALL_CONFIG.clientMaxTokens,
+        temperature: 1,
+      });
+      const again = readTokens(retry.text);
+      if (again.reply) ({ reply, outcome: tokenOutcome } = again);
+    } catch {
+      // keep the original reply
+    }
+  }
 
   if (reply === "") {
     return errorResponse(

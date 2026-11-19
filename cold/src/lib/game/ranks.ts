@@ -20,31 +20,31 @@ export const RANKS: Rank[] = [
     id: "intern",
     name: "Intern",
     threshold: 0,
-    flavour: "You have a desk. Technically. It's a folding table near the printer.",
+    flavour: "You have a desk. Technically. It is a folding table next to the printer, and the printer has a name, and the name is Kevin.",
   },
   {
     id: "junior",
     name: "Junior Broker",
     threshold: 2_500,
-    flavour: "A real phone, a real chair, and a manager who now knows your name.",
+    flavour: "A real phone, a real chair, and a manager who has started pronouncing your name correctly.",
   },
   {
     id: "shark",
     name: "Shark",
     threshold: 15_000,
-    flavour: "People stop talking when you walk past. Mostly out of concern.",
+    flavour: "Conversations stop when you walk past. Half respect, half concern, all of it noted.",
   },
   {
     id: "wolf",
     name: "Wolf",
     threshold: 60_000,
-    flavour: "You have a corner office and an unexplained second phone.",
+    flavour: "Corner office. Two phones. One of them has never been explained and never will be.",
   },
   {
     id: "legend",
     name: "Legend",
     threshold: 250_000,
-    flavour: "There is a framed photo of you in the lobby. Nobody authorised it.",
+    flavour: "There is a framed photo of you in the lobby. Nobody authorised it. Nobody has dared to take it down.",
   },
 ];
 

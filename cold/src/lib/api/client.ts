@@ -35,7 +35,13 @@ export class ApiError extends Error {
 
 /** The fallback when the fetch itself never reached the server. */
 function offlineFailure(): CallFailure {
-  return { kind: "upstream", ...ERROR_COPY.upstream, retryable: true };
+  return {
+    kind: "upstream",
+    title: "No dial tone",
+    message:
+      "The handset is dead - no line at all. Check that this device is online, then redial.",
+    retryable: true,
+  };
 }
 
 async function post<T>(
@@ -58,13 +64,14 @@ async function post<T>(
   try {
     data = await res.json();
   } catch {
-    throw new ApiError(offlineFailure());
+    // The server answered, just not in JSON (a gateway timeout page, say): the line is up but broken.
+    throw new ApiError({ kind: "upstream", ...ERROR_COPY.upstream, retryable: true });
   }
 
   if (!res.ok) {
     const envelope = data as Partial<ApiErrorBody>;
     if (envelope?.error?.kind) throw new ApiError(envelope.error);
-    throw new ApiError(offlineFailure());
+    throw new ApiError({ kind: "upstream", ...ERROR_COPY.upstream, retryable: true });
   }
 
   try {

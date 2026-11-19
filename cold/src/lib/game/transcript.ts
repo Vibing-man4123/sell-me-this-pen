@@ -25,10 +25,10 @@ export function isOver(outcome: CallOutcome): boolean {
 }
 
 export const OUTCOME_COPY: Record<Exclude<CallOutcome, "open">, { label: string; note: string }> = {
-  closed: { label: "Deal closed", note: "They said yes. Out loud. On a recorded line." },
-  hangup: { label: "Hung up on", note: "The dial tone is also feedback." },
-  timeout: { label: "Ran out of call", note: "Twelve exchanges and no ask. The clock is a closer too." },
-  walkaway: { label: "You hung up", note: "Sometimes the smartest thing a broker does is stop talking." },
+  closed: { label: "Deal closed", note: "They said yes. Out loud. On a line that is, legally, probably recorded." },
+  hangup: { label: "Hung up on", note: "The dial tone is feedback. It is just not the constructive kind." },
+  timeout: { label: "Ran out of call", note: "Twelve exchanges and no ask. The clock closed this one, and it did not take a commission." },
+  walkaway: { label: "You hung up", note: "Bold move. Sometimes the smartest thing a broker can do is stop talking. Sometimes." },
 };
 
 /** Count of broker messages, which is what `maxTurns` actually limits. */

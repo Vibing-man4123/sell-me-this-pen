@@ -9,7 +9,7 @@ import {
 import { getItem } from "@/lib/game/items";
 import { computePayout } from "@/lib/game/payout";
 import { getPersona } from "@/lib/game/personas";
-import { VERDICT_JSON_SCHEMA, VerdictSchema, type Verdict } from "@/lib/game/rubric";
+import { normalizeVerdict, VERDICT_JSON_SCHEMA, VerdictSchema, type Verdict } from "@/lib/game/rubric";
 import type { CallOutcome, Turn } from "@/lib/game/transcript";
 import { buildJudgeSystemPrompt, buildJudgeUserPrompt } from "@/lib/prompts/judgePrompt";
 import { chat, GroqError, MODELS, type ChatMessage } from "@/lib/server/groq";
@@ -102,6 +102,7 @@ export async function POST(request: Request) {
   // One retry, with the specific complaint attached.
   let verdict: Verdict | null = null;
   let lastProblem = "";
+  let transientRetried = false;
 
   for (let attempt = 0; attempt < 2 && verdict === null; attempt++) {
     if (attempt > 0) {
@@ -115,6 +116,19 @@ export async function POST(request: Request) {
     try {
       ({ text } = await requestVerdict(messages));
     } catch (err) {
+      // One bounded retry for transient upstream trouble (5xx, bad generation).
+      // Never for rate limits or config - those must not be hammered.
+      if (
+        err instanceof GroqError &&
+        (err.kind === "upstream" || err.kind === "bad_output") &&
+        !transientRetried
+      ) {
+        transientRetried = true;
+        console.error(`[judge] transient ${err.kind}, retrying once: ${err.message}`);
+        await new Promise((r) => setTimeout(r, 600));
+        attempt--;
+        continue;
+      }
       if (err instanceof GroqError) return groqErrorResponse(err);
       throw err;
     }
@@ -127,7 +141,7 @@ export async function POST(request: Request) {
       continue;
     }
 
-    const check = VerdictSchema.safeParse(candidate);
+    const check = VerdictSchema.safeParse(normalizeVerdict(candidate));
     if (!check.success) {
       lastProblem = check.error.issues
         .map((i) => `${i.path.join(".")} ${i.message}`)
@@ -145,6 +159,7 @@ export async function POST(request: Request) {
   }
 
   if (verdict === null) {
+    console.error(`[judge] bad_output after retries: ${lastProblem}`);
     return errorResponse(
       {
         error: {

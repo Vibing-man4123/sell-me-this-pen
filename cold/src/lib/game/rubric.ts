@@ -24,7 +24,7 @@ export const RUBRIC: Record<Criterion, CriterionSpec> = {
   charisma: {
     label: "Charisma",
     weight: 0.2,
-    blurb: "Did they actually enjoy the call, or were they counting the seconds?",
+    blurb: "Did they enjoy the call, or were they checking the clock and the exits?",
     anchors: [
       { score: 0, meaning: "Robotic, read off a script, zero warmth or personality." },
       { score: 3, meaning: "Polite but forgettable. No rapport, no reason to keep listening." },
@@ -46,7 +46,7 @@ export const RUBRIC: Record<Criterion, CriterionSpec> = {
   objectionHandling: {
     label: "Objection Handling",
     weight: 0.35,
-    blurb: "The only part of the call that is actually hard.",
+    blurb: "The only part of the call that is actually hard. Everything else is just talking.",
     anchors: [
       { score: 0, meaning: "Ignored every objection or just repeated the pitch louder." },
       { score: 3, meaning: "Acknowledged objections but had no answer and let them stand." },
@@ -57,7 +57,7 @@ export const RUBRIC: Record<Criterion, CriterionSpec> = {
   closing: {
     label: "Closing",
     weight: 0.25,
-    blurb: "Did a specific ask actually leave your mouth?",
+    blurb: "Did a specific ask actually leave your mouth, or just a vibe?",
     anchors: [
       { score: 0, meaning: "Never asked for anything. Call just... ended." },
       { score: 3, meaning: "A vague 'so, let me know' with no commitment attached." },
@@ -120,7 +120,40 @@ export const VerdictSchema = z.object({
 export type Verdict = z.infer<typeof VerdictSchema>;
 
 /** JSON Schema handed to the LLM for structured output. Derived, never hand-maintained. */
-export const VERDICT_JSON_SCHEMA = z.toJSONSchema(VerdictSchema, { target: "draft-7" });
+export const VERDICT_JSON_SCHEMA = stripBounds(z.toJSONSchema(VerdictSchema, { target: "draft-7" }));
+
+/**
+ * Groq's strict mode rejects the WHOLE generation with a 400 when any string
+ * is a few characters over maxLength (this caused ~50% of gradings to 502).
+ * So the schema we send carries shape only; bounds are enforced by
+ * `normalizeVerdict` on our side, where overshoot is trimmed, not fatal.
+ */
+function stripBounds<T>(node: T): T {
+  if (Array.isArray(node)) return node.map(stripBounds) as T;
+  if (node && typeof node === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(node)) {
+      if (k === "maxLength" || k === "minLength" || k === "minimum" || k === "maximum") continue;
+      out[k] = stripBounds(v);
+    }
+    return out as T;
+  }
+  return node;
+}
+
+/** Clamps scores and trims over-long text so a near-miss is not a failed call. */
+export function normalizeVerdict(raw: unknown): unknown {
+  if (!raw || typeof raw !== "object") return raw;
+  const v = { ...(raw as Record<string, unknown>) };
+  for (const c of CRITERIA) {
+    if (typeof v[c] === "number") v[c] = Math.min(SCORE_MAX, Math.max(SCORE_MIN, Math.round(v[c] as number)));
+  }
+  if (typeof v.unitsSold === "number") v.unitsSold = Math.min(99, Math.max(0, Math.round(v.unitsSold)));
+  for (const [k, max] of [["bestLine", 240], ["worstLine", 240], ["coaching", 600]] as const) {
+    if (typeof v[k] === "string" && (v[k] as string).length > max) v[k] = (v[k] as string).slice(0, max);
+  }
+  return v;
+}
 
 /** 0-10, weighted. The single number the payout formula consumes. */
 export function weightedScore(v: Pick<Verdict, Criterion>): number {

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, postCall, postJudge, type CallFailure } from "@/lib/api/client";
 import type { JudgeResponse } from "@/lib/api/contracts";
 import { CALL_CONFIG } from "@/lib/game/constants";
+import { useHydrated, useProgress } from "@/lib/store/progress";
 import { isOver, type CallOutcome, type Turn } from "@/lib/game/transcript";
 
 /**
@@ -55,6 +56,13 @@ export function useCall(personaId: string, itemId: string) {
   const pending = useRef<Turn[] | null>(null);
   /** Guards against React 19 double-invoking the opening effect in dev. */
   const dialled = useRef(false);
+  /** One id per call: the store ignores a second record with the same id. */
+  const callId = useRef<string | null>(null);
+  /** Set synchronously when the payout is banked, so a double-click cannot bank it twice. */
+  const banked = useRef(false);
+  const grading = useRef(false);
+  // Rehydrate saved progress now, long before a payout can arrive.
+  useHydrated();
 
   const runExchange = useCallback(
     async (next: Turn[]) => {
@@ -98,13 +106,6 @@ export function useCall(personaId: string, itemId: string) {
     [phase, turns, turnsLeft, runExchange]
   );
 
-  /** Retries whatever just failed, without changing the transcript. */
-  const retry = useCallback(() => {
-    if (phase === "grading" || result !== null) return;
-    if (failure === null) return;
-    void runExchange(pending.current ?? turns);
-  }, [phase, result, failure, turns, runExchange]);
-
   /** Ends the call early, by choice rather than by outcome. */
   const hangUp = useCallback(() => {
     if (phase !== "talking") return;
@@ -114,17 +115,50 @@ export function useCall(personaId: string, itemId: string) {
   }, [phase]);
 
   const grade = useCallback(async () => {
-    if (phase !== "over" || outcome === "open") return;
+    if (phase !== "over" || outcome === "open" || grading.current) return;
+    grading.current = true;
     setPhase("grading");
     setFailure(null);
     try {
-      setResult(await postJudge({ personaId, itemId, turns, outcome }));
+      const res = await postJudge({ personaId, itemId, turns, outcome });
+      if (!banked.current) {
+        banked.current = true;
+        callId.current ??= crypto.randomUUID();
+        useProgress.getState().recordCall({
+          id: callId.current,
+          personaId,
+          itemId,
+          payout: res.payout.total,
+          score: res.payout.weighted,
+          grade: res.payout.grade,
+          closedDeal: res.payout.closedDeal,
+          timestamp: Date.now(),
+        });
+      }
+      setResult(res);
       setPhase("graded");
     } catch (err) {
       setFailure(err instanceof ApiError ? err.failure : null);
       setPhase("over");
+    } finally {
+      grading.current = false;
     }
   }, [phase, outcome, personaId, itemId, turns]);
+
+  /**
+   * Retries whatever just failed. A failure while phase is "over" is a failed
+   * GRADING of a finished call: re-grade the same transcript, never re-dial.
+   * (banked/callId/store dedupe still guarantee a single payout.)
+   */
+  const retry = useCallback(() => {
+    if (phase === "grading" || result !== null) return;
+    if (failure === null) return;
+    if (phase === "over") {
+      void grade();
+      return;
+    }
+    void runExchange(pending.current ?? turns);
+  }, [phase, result, failure, turns, runExchange, grade]);
 
   const state: CallState = {
     phase,

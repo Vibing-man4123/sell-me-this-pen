@@ -141,15 +141,15 @@ export default function Moodboard() {
 
         <Section id="portraits" eyebrow="03" title="The cast">
           <p className="mb-5 max-w-2xl text-sm text-ink-soft">
-            Flat vectors, 3px ink outline, no gradients, no shading. Each portrait reuses one head
-            construction and varies only hair, garment, expression and props - that is what keeps six
-            faces (and the next six) looking like one artist drew them.
+            Each portrait is an SVG file under public/art/characters, mapped in lib/art/assets.ts.
+            These are placeholders in the house style (flat colour, heavy ink outline, no shading);
+            the owner will redraw them under the same filenames.
           </p>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {PERSONAS.map((p) => (
               <Panel key={p.id} tone="card" className="overflow-hidden">
                 <PersonaPortrait
-                  portrait={p.portrait}
+                  personaId={p.id}
                   size={320}
                   title={`${p.name}, ${p.title}`}
                   className="h-auto w-full border-b-2 border-ink/80"

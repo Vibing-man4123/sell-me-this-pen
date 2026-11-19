@@ -1,3 +1,9 @@
+"use client";
+
+import { useEffect } from "react";
+import { RankBadge } from "@/components/art/RankBadge";
+import { play } from "@/lib/sfx";
+import { PersonaPortrait } from "@/components/art/PersonaPortrait";
 import { ButtonLink } from "@/components/ui/Button";
 import { Eyebrow, Panel, PanelTitle } from "@/components/ui/Panel";
 import type { JudgeResponse } from "@/lib/api/contracts";
@@ -6,6 +12,9 @@ import { formatMoney } from "@/lib/game/payout";
 import type { Persona } from "@/lib/game/personas";
 import { SCORE_MAX } from "@/lib/game/rubric";
 import { OUTCOME_COPY, type CallOutcome } from "@/lib/game/transcript";
+import { ART } from "@/lib/art/assets";
+import { newlyUnlocked, rankById } from "@/lib/game/unlocks";
+import { useHydrated, useProgress, useRank } from "@/lib/store/progress";
 
 /**
  * The commission statement. Every number the player banks is shown with the
@@ -70,11 +79,65 @@ export function ResultsPanel({
 }) {
   const { verdict, payout } = result;
   const copy = OUTCOME_COPY[outcome];
+  const hydrated = useHydrated();
+  const balance = useProgress((s) => s.balance);
+  const rank = useRank();
+  // Set by recordCall only on the call that crossed a rank threshold, so it shows once.
+  const promotion = useProgress((s) => s.promotion);
+  const promoted = promotion ? rankById(promotion) : null;
+  const unlocked = promotion ? newlyUnlocked(promotion) : null;
+
+  useEffect(() => {
+    play("stamp");
+    const t = setTimeout(() => play(payout.closedDeal ? "kaching" : "trombone"), 350);
+    return () => clearTimeout(t);
+  }, [payout.closedDeal]);
 
   return (
     <div className="flex flex-col gap-5">
+      {promoted && unlocked && (
+        <Panel tone="card" className="relative overflow-hidden border-2 border-gold p-6 text-center">
+          {/* eslint-disable-next-line @next/next/no-img-element -- SVG */}
+          <img src={ART.fx.cashBurst} alt="" aria-hidden className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-15" />
+          <div className="relative mx-auto max-w-md rounded-card border border-brass/40 bg-sand p-5 shadow-desk">
+            {/* eslint-disable-next-line @next/next/no-img-element -- SVG */}
+            <img src={ART.jordan.rich} width={120} height={120} alt="" className="mx-auto" />
+            <RankBadge rank={promoted.id} size={96} title={promoted.name} className="fx-stamp mx-auto mt-2" />
+            <Eyebrow className="font-semibold text-ink opacity-100">Promotion</Eyebrow>
+            <p className="mt-1 font-display text-3xl font-black text-ink">You are now a {promoted.name}</p>
+            <p className="mt-2 text-sm italic text-ink-soft">{promoted.flavour}</p>
+            {(unlocked.personas.length > 0 || unlocked.items.length > 0) && (
+              <p className="mt-3 text-sm">
+                Newly in the Rolodex:{" "}
+                <strong>
+                  {[...unlocked.personas.map((p) => p.name), ...unlocked.items.map((i) => i.name)].join(", ")}
+                </strong>
+              </p>
+            )}
+          </div>
+        </Panel>
+      )}
       {/* The headline: what happened, and what it paid. */}
-      <Panel tone="card" className="p-6 text-center">
+      <Panel tone="card" className="relative overflow-hidden p-6 text-center">
+        {payout.closedDeal && (
+          // eslint-disable-next-line @next/next/no-img-element -- SVG
+          <img src={ART.fx.cashBurst} alt="" aria-hidden className="fx-cash pointer-events-none absolute inset-0 h-full w-full object-cover" />
+        )}
+        {/* eslint-disable-next-line @next/next/no-img-element -- SVG */}
+        <img
+          src={payout.closedDeal ? ART.fx.soldStamp : ART.fx.hungupStamp}
+          alt={payout.closedDeal ? "Sold" : "No sale"}
+          width={180}
+          height={120}
+          className="fx-stamp pointer-events-none absolute top-2 right-2 z-10 h-auto w-28 sm:w-44"
+        />
+        <PersonaPortrait
+          personaId={persona.id}
+          mood={payout.closedDeal ? "sold" : "resist"}
+          size={120}
+          title={`${persona.name}, ${payout.closedDeal ? "sold" : "not sold"}`}
+          className="mx-auto mb-3 rounded-card border-2 border-ink/70"
+        />
         <Eyebrow className="text-brass">{copy.label}</Eyebrow>
         <p className="mt-1 text-sm text-ink-soft">{copy.note}</p>
         <p className="mt-5 font-display text-5xl font-black text-foil sm:text-6xl">
@@ -83,6 +146,16 @@ export function ResultsPanel({
         <p className="mt-2 font-mono text-xs uppercase tracking-[0.2em] text-ink-faint">
           Commission &middot; {payout.grade} &middot; {payout.weighted.toFixed(2)}/
           {SCORE_MAX} weighted
+        </p>
+        <p className="mt-3 font-mono text-xs text-ink-soft" aria-live="polite">
+          {hydrated ? (
+            <>
+              Balance {formatMoney(balance)} &middot;{" "}
+              <RankBadge rank={rank.id} size={20} className="inline-block align-middle" /> {rank.name}
+            </>
+          ) : (
+            "\u00a0"
+          )}
         </p>
       </Panel>
 
@@ -166,7 +239,10 @@ export function ResultsPanel({
       </div>
 
       <div className="flex flex-wrap justify-center gap-3">
-        <ButtonLink href={`/call/${persona.id}/${item.id}`} variant="gold">
+        <ButtonLink href="/rolodex" variant="gold">
+          Back to the Rolodex
+        </ButtonLink>
+        <ButtonLink href={`/call/${persona.id}/${item.id}`} variant="ghost">
           Run it again
         </ButtonLink>
         <ButtonLink href="/" variant="ghost">

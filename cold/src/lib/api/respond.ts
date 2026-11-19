@@ -13,6 +13,8 @@ export function errorResponse(body: ApiErrorBody, status: number): Response {
 
 /** A Groq failure, as an in-fiction error the UI can render. */
 export function groqErrorResponse(err: GroqError): Response {
+  // Server-side only: the player sees a joke, the operator sees the cause.
+  console.error(`[groq] ${err.kind}: ${err.message}`);
   const status = err.kind === "rate_limit" ? 429 : err.kind === "missing_key" ? 500 : 502;
   return errorResponse(
     {

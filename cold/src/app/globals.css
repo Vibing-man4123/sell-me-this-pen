@@ -14,7 +14,7 @@
   /* Text and outlines. `ink` is every illustration stroke and all body copy. */
   --color-ink: #22364a;
   --color-ink-soft: #4b6375;
-  --color-ink-faint: #5f7384;
+  --color-ink-faint: #4d6273;
 
   /* The world: sky behind everything, white panels, pale blue raised surfaces. */
   --color-sky: #bfe3f2;
@@ -111,4 +111,39 @@ body {
 ::selection {
   background-color: var(--color-gold);
   color: var(--color-ink);
+}
+
+/* FX: transform/opacity only, so they stay cheap on school Chromebooks. */
+@keyframes stamp-in {
+  0% { transform: scale(2.6) rotate(-24deg); opacity: 0; }
+  60% { transform: scale(0.94) rotate(-9deg); opacity: 1; }
+  100% { transform: scale(1) rotate(-8deg); opacity: 1; }
+}
+@keyframes ring-pulse {
+  0%, 100% { transform: scale(0.92); opacity: 0.55; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+@keyframes sweat-drip {
+  0%, 100% { transform: translateY(0); opacity: 0.9; }
+  50% { transform: translateY(6px); opacity: 1; }
+}
+@keyframes cash-pop {
+  0% { transform: scale(0.4); opacity: 0; }
+  40% { opacity: 0.9; }
+  100% { transform: scale(1.15); opacity: 0.1; }
+}
+.fx-stamp { animation: stamp-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+.fx-ring { animation: ring-pulse 0.9s ease-in-out infinite; }
+.fx-sweat { animation: sweat-drip 1s ease-in-out infinite; }
+.fx-cash { animation: cash-pop 0.7s ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .fx-stamp, .fx-ring, .fx-sweat, .fx-cash { animation: none; }
+  .fx-stamp { transform: rotate(-8deg); }
+  /* Tailwind's animate-pulse / transitions, and any smooth scrolling. */
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

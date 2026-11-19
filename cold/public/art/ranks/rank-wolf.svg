@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" stroke="#22364a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+<title>Wolf</title>
+<circle cx="128" cy="128" r="116" fill="#f0922f"/>
+<circle cx="128" cy="128" r="100" fill="none" stroke-width="4" stroke="#ffc061"/>
+<path d="M70 190 L76 80 L108 112 Q128 104 148 112 L180 80 L186 190 Q128 214 70 190z" fill="#fdf4e6"/><rect x="82" y="122" width="92" height="22" rx="8" fill="#22364a"/><path d="M104 176 h48" fill="none" stroke-width="10" stroke="#d91d40"/>
+</svg>

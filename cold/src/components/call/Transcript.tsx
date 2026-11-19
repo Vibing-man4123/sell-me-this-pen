@@ -32,7 +32,7 @@ export function ClientLine({
   return (
     <div className="flex items-end gap-3">
       <PersonaPortrait
-        portrait={persona.portrait}
+        personaId={persona.id}
         size={44}
         title={persona.name}
         className="shrink-0 rounded-full border-2 border-brass/50"
@@ -55,7 +55,7 @@ export function Listening({ persona }: { persona: Persona }) {
   return (
     <div className="flex items-end gap-3">
       <PersonaPortrait
-        portrait={persona.portrait}
+        personaId={persona.id}
         size={44}
         title={persona.name}
         className="shrink-0 rounded-full border-2 border-brass/50"

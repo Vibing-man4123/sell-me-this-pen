@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" stroke="#22364a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+<title>Haunted Beachfront Condo</title>
+<path d="M14 54 v-34 h26 v34 z" fill="#fdf4e6"/><path d="M40 54 v-24 h12 v24 z" fill="#fdf4e6"/><g stroke-width="2"><rect x="20" y="24" width="7" height="6" fill="#f0922f"/><rect x="30" y="24" width="7" height="6" fill="#3a9bc9"/><rect x="20" y="32" width="7" height="6" fill="#f0922f"/><rect x="30" y="32" width="7" height="6" fill="#3a9bc9"/></g><path d="M6 58 q8 -5 16 0 q8 5 16 0 q8 -5 16 0" fill="none" stroke="#297d64"/><path d="M44 36 q4 -6 8 0 v8 q-4 4 -8 0 z" fill="#ffffff" stroke-width="2"/>
+</svg>

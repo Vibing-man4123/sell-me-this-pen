@@ -1,5 +1,10 @@
+import { MuteToggle } from "@/components/ui/MuteToggle";
+import { HowToPlayLauncher } from "@/components/ui/HowToPlay";
 import { ItemIcon } from "@/components/art/ItemIcon";
 import { PersonaPortrait } from "@/components/art/PersonaPortrait";
+import { TrophyShelf } from "@/components/shop/TrophyShelf";
+import { BalanceChip } from "@/components/ui/BalanceChip";
+import { ART } from "@/lib/art/assets";
 import { ButtonLink } from "@/components/ui/Button";
 import { Eyebrow, Panel } from "@/components/ui/Panel";
 import { GAME_TITLE_LINES, PLAYER_CHARACTER, STARTER_CALL } from "@/lib/game/constants";
@@ -13,18 +18,31 @@ export default function TitleScreen() {
 
   return (
     <main className="relative flex-1 overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-40"
+        style={{ backgroundImage: `url(${ART.backgrounds.title})` }}
+      />
       <div className="pointer-events-none absolute inset-0 vignette" />
 
       <div className="relative mx-auto flex max-w-5xl flex-col gap-10 px-6 py-14 sm:py-20">
         <header className="text-center">
           <Eyebrow className="text-brass">Est. 1987 &middot; Second floor, above the carpet showroom</Eyebrow>
-          <h1 className="mt-3 font-display text-5xl leading-[0.92] font-black tracking-tight text-foil sm:text-7xl">
-            {GAME_TITLE_LINES.map((line) => (
-              <span key={line} className="block">
-                {line}
-              </span>
-            ))}
+          <h1 className="mt-3">
+            {/* eslint-disable-next-line @next/next/no-img-element -- SVG */}
+            <img
+              src={ART.logo.wordmark}
+              width={1200}
+              height={600}
+              alt={GAME_TITLE_LINES.join(" ")}
+              fetchPriority="high"
+              decoding="async"
+              className="mx-auto h-auto w-full max-w-md"
+            />
           </h1>
+          <BalanceChip className="mt-2" />
+          <MuteToggle className="mt-2" />
+          <TrophyShelf className="mt-4" />
           <p className="mx-auto mt-5 max-w-2xl text-balance text-ink-soft sm:text-lg">
             You are <strong className="text-ink">{PLAYER_CHARACTER}</strong>, a broker with too much
             hair gel and no discernible licence. Cold-call strangers. Sell them things that should not be
@@ -32,9 +50,16 @@ export default function TitleScreen() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <ButtonLink href={`/call/${STARTER_CALL.personaId}/${STARTER_CALL.itemId}`} variant="gold">
-              Pick up the phone
+            <ButtonLink href="/rolodex" variant="gold">
+              Open the Rolodex
             </ButtonLink>
+            <ButtonLink href="/shop" variant="ghost">
+              Lifestyle Shop
+            </ButtonLink>
+            <ButtonLink href={`/call/${STARTER_CALL.personaId}/${STARTER_CALL.itemId}`} variant="ghost">
+              First call
+            </ButtonLink>
+            <HowToPlayLauncher autoOpen />
             <ButtonLink href="/moodboard#rubric" variant="ghost">
               How you&apos;re graded
             </ButtonLink>
@@ -43,7 +68,7 @@ export default function TitleScreen() {
             </ButtonLink>
           </div>
           <p className="mt-4 font-mono text-xs text-ink-faint">
-            First call: {starterItem.name} to {starterPersona.name}. The Rolodex opens next.
+            First call: {starterItem.name} to {starterPersona.name}. Or pick your own from the Rolodex.
           </p>
         </header>
 
@@ -53,7 +78,7 @@ export default function TitleScreen() {
             {PERSONAS.map((persona) => (
               <figure key={persona.id} className="text-center">
                 <PersonaPortrait
-                  portrait={persona.portrait}
+                  personaId={persona.id}
                   size={96}
                   title={`${persona.name}, ${persona.title}`}
                   className="mx-auto rounded-card border-2 border-ink/80"
