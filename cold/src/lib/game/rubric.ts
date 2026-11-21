@@ -150,9 +150,23 @@ export function normalizeVerdict(raw: unknown): unknown {
   }
   if (typeof v.unitsSold === "number") v.unitsSold = Math.min(99, Math.max(0, Math.round(v.unitsSold)));
   for (const [k, max] of [["bestLine", 240], ["worstLine", 240], ["coaching", 600]] as const) {
-    if (typeof v[k] === "string" && (v[k] as string).length > max) v[k] = (v[k] as string).slice(0, max);
+    if (typeof v[k] === "string" && (v[k] as string).length > max) v[k] = trimText(v[k] as string, max);
   }
   return v;
+}
+
+/**
+ * Cuts over-long text at the last sentence end that fits, else the last word
+ * break, so the results screen never shows "your spreadshee". No ellipsis is
+ * added: a quote must stay a verbatim substring of the broker's line.
+ */
+export function trimText(text: string, max: number): string {
+  if (text.length <= max) return text;
+  const head = text.slice(0, max);
+  const sentence = head.match(/^[\s\S]*[.!?\u2026]["'\u201d\u2019)]*(?=\s)/);
+  if (sentence && sentence[0].length >= max / 2) return sentence[0].trim();
+  const space = head.lastIndexOf(" ");
+  return (space > 0 ? head.slice(0, space) : head).replace(/[\s,;:-]+$/, "");
 }
 
 /** 0-10, weighted. The single number the payout formula consumes. */

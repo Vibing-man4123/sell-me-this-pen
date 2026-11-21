@@ -6,8 +6,12 @@ export const CALL_CONFIG = {
   warnAtRemaining: 3,
   /** Hard cap on a single broker message, enforced in the UI and the proxy. */
   maxMessageChars: 600,
-  /** Cap on client replies so calls stay snappy on slow hardware. */
-  clientMaxTokens: 220,
+  /**
+   * Cap on client replies so calls stay snappy on slow hardware. Leaves room
+   * for a 4-sentence answer to a real question; a reply that still hits the cap
+   * is trimmed to its last complete sentence in /api/call.
+   */
+  clientMaxTokens: 300,
 } as const;
 
 export const GAME_TITLE = "Sell Me This Pen";

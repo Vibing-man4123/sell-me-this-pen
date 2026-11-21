@@ -33,4 +33,5 @@ cd cold
 npm install
 cp .env.example .env.local   # add GROQ_API_KEY
 npm run dev
+npm test                     # node --test, no extra dependencies
 ```

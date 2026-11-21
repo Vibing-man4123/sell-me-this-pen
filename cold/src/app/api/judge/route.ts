@@ -10,7 +10,17 @@ import { getItem } from "@/lib/game/items";
 import { computePayout } from "@/lib/game/payout";
 import { getPersona } from "@/lib/game/personas";
 import { normalizeVerdict, VERDICT_JSON_SCHEMA, VerdictSchema, type Verdict } from "@/lib/game/rubric";
-import type { CallOutcome, Turn } from "@/lib/game/transcript";
+import type { CallOutcome } from "@/lib/game/transcript";
+import { knownAmount, priceContext } from "@/lib/game/prices";
+import {
+  inventedNumbers,
+  inventedSpecs,
+  leakedNumbers,
+  lineProblems,
+  quotesAreReal,
+  scrubLeaks,
+  withCleanQuotes,
+} from "@/lib/game/verdictChecks";
 import { buildJudgeSystemPrompt, buildJudgeUserPrompt } from "@/lib/prompts/judgePrompt";
 import { chat, GroqError, MODELS, type ChatMessage } from "@/lib/server/groq";
 
@@ -28,9 +38,6 @@ import { chat, GroqError, MODELS, type ChatMessage } from "@/lib/server/groq";
  * cap returns an empty message instead of a verdict - verified, not theorised.
  */
 const JUDGE_MAX_TOKENS = 2_500;
-
-/** Verbatim-quote fields the judge sometimes paraphrases or pads. */
-const QUOTE_FIELDS = ["bestLine", "worstLine"] as const;
 
 /**
  * Brings the verdict in line with what actually happened.
@@ -56,21 +63,6 @@ function reconcile(verdict: Verdict, outcome: Exclude<CallOutcome, "open">): Ver
     closedDeal,
     unitsSold: closedDeal ? Math.max(1, verdict.unitsSold) : 0,
   };
-}
-
-/** True if the quote fields are really quotes from the broker. */
-function quotesAreReal(verdict: Verdict, turns: Turn[]): boolean {
-  const brokerText = turns
-    .filter((t) => t.role === "broker")
-    .map((t) => t.content.toLowerCase())
-    .join("\n");
-
-  return QUOTE_FIELDS.every((field) => {
-    const quote = verdict[field].trim().toLowerCase();
-    // An empty quote is legitimate when the broker barely spoke.
-    if (quote === "") return true;
-    return brokerText.includes(quote);
-  });
 }
 
 async function requestVerdict(messages: ChatMessage[]): Promise<{ text: string }> {
@@ -103,6 +95,8 @@ export async function POST(request: Request) {
   let verdict: Verdict | null = null;
   let lastProblem = "";
   let transientRetried = false;
+  let softFallback: Verdict | null = null;
+  const known = knownAmount(priceContext(persona, item, turns), [], true);
 
   for (let attempt = 0; attempt < 2 && verdict === null; attempt++) {
     if (attempt > 0) {
@@ -149,14 +143,51 @@ export async function POST(request: Request) {
       continue;
     }
 
-    if (!quotesAreReal(check.data, turns)) {
+    const data = withCleanQuotes(check.data);
+    if (!quotesAreReal(data, turns)) {
       lastProblem =
         "bestLine and worstLine must be copied character-for-character from the BROKER lines in the transcript";
       continue;
     }
 
-    verdict = check.data;
+    // Soft problems: one retry with the complaint, then the verdict stands
+    // (leaked numbers are scrubbed; odd best/worst picks are kept).
+    const leaks = leakedNumbers(data, persona, item, turns);
+    const lines = lineProblems(data, turns);
+    const invented = inventedNumbers(data.coaching, known);
+    const specs = inventedSpecs(data.coaching, item, turns);
+    if (attempt === 0 && (leaks.length > 0 || lines.length > 0 || invented.length > 0 || specs.length > 0)) {
+      lastProblem = [
+        ...(leaks.length > 0
+          ? [`coaching uses ${leaks.join(", ")}, which the client never said in the transcript (it is hidden info the broker could not know). Suggest a line without that number`]
+          : []),
+        ...(invented.length > 0
+          ? [`coaching uses ${invented.join(", ")}, which appears nowhere in the call or the product; never invent specs, prices or facts`]
+          : []),
+        ...(specs.length > 0
+          ? [`coaching claims specs the product never states (${specs.join(", ")}); the suggested line must be a question, a reframe of the client's own words, or a quote from WHAT IS TRUE ABOUT IT`]
+          : []),
+        ...lines,
+      ].join("; ");
+      softFallback = leaks.length > 0 ? scrubLeaks(data, leaks) : data;
+      continue;
+    }
+    if (lines.length > 0 || invented.length > 0 || specs.length > 0) {
+      const kept = [...lines, ...invented.map((n) => `invented ${n}`), ...specs.map((t) => `spec "${t}"`)];
+      console.error(`[judge] keeping after retry: ${kept.join("; ")}`);
+    }
+    if (leaks.length > 0) {
+      console.error(`[judge] coaching still leaks ${leaks.join(", ")}; scrubbing`);
+      verdict = scrubLeaks(data, leaks);
+      continue;
+    }
+
+    verdict = data;
   }
+
+  // A retry that came back worse than "soft problems" does not cost the
+  // player a verdict that was usable.
+  if (verdict === null && softFallback !== null) verdict = softFallback;
 
   if (verdict === null) {
     console.error(`[judge] bad_output after retries: ${lastProblem}`);

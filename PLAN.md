@@ -102,6 +102,7 @@ Kierunek ustalony 2026-11-12: **Flash / Newgrounds ok. 2003** zamiast powściąg
 - Tryb „Skip the grind” — odblokuj wszystko jednym kliknięciem, dla oglądającego
 - README na GitHubie ze screenshotami/GIF i opisem decyzji technicznych
 - Ewentualnie link w CV
+- ✅ 2026-11-21 — **Realistyczni klienci / discovery** (po playteście właściciela): klienci odpowiadają na pytania (ostrożnie na początku, szczerzej z rapportem), mają ukryte, odkrywalne sytuacje, potrzeby, prawdziwą obiekcję i budżet; pitch pod odkrytą potrzebę realnie zamyka, a sędzia to punktuje. Do dopracowania: nadużywany catchphrase, zbyt cierpliwi klienci wobec recytowania cech.
 
 ---
 

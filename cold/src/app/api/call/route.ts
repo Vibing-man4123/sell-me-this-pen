@@ -9,6 +9,10 @@ import {
 import { CALL_CONFIG } from "@/lib/game/constants";
 import { getItem } from "@/lib/game/items";
 import { getPersona } from "@/lib/game/personas";
+import { closeBlocked, lieState } from "@/lib/game/lies";
+import { priceContext, priceNote, suspiciousAmounts } from "@/lib/game/prices";
+import { cleanLanguage, readReply } from "@/lib/game/reply";
+import { capSentences, dropBackToBackPhrases } from "@/lib/game/tics";
 import { brokerTurnsUsed, type CallOutcome, type Turn } from "@/lib/game/transcript";
 import {
   buildClientOpeningInstruction,
@@ -24,30 +28,6 @@ import { chat, GroqError, MODELS, type ChatMessage } from "@/lib/server/groq";
  * The API key lives only in this process - the browser talks to this route and
  * never to Groq.
  */
-
-/** The client's end-of-call tokens. Stripped before anything reaches the UI. */
-const TOKENS: { token: string; outcome: Extract<CallOutcome, "closed" | "hangup"> }[] = [
-  { token: "[CLOSED]", outcome: "closed" },
-  { token: "[HANGUP]", outcome: "hangup" },
-];
-
-function readTokens(raw: string): { reply: string; outcome: CallOutcome } {
-  let reply = raw;
-  let outcome: CallOutcome = "open";
-
-  for (const { token, outcome: hit } of TOKENS) {
-    if (reply.includes(token)) {
-      outcome = hit;
-      reply = reply.split(token).join("");
-    }
-  }
-
-  // Models occasionally invent bracketed stage directions despite the prompt;
-  // drop any leftovers so the player never sees the machinery.
-  reply = reply.replace(/\[[A-Z_]{3,}\]/g, "").trim();
-
-  return { reply, outcome };
-}
 
 /** Transcript -> chat messages. The client model is the assistant. */
 function toMessages(turns: Turn[]): ChatMessage[] {
@@ -83,7 +63,7 @@ export async function POST(request: Request) {
   const isLastExchange = used === CALL_CONFIG.maxTurns;
 
   const messages: ChatMessage[] = [
-    { role: "system", content: buildClientSystemPrompt(persona, item) },
+    { role: "system", content: buildClientSystemPrompt(persona, item, turns) },
   ];
 
   if (turns.length === 0) {
@@ -109,7 +89,7 @@ export async function POST(request: Request) {
     throw err;
   }
 
-  let { reply, outcome: tokenOutcome } = readTokens(result.text);
+  let { reply, outcome: tokenOutcome } = readReply(result);
 
   // Models sometimes parrot an earlier line verbatim. One retry, with a nudge.
   const norm = (t: string) => t.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -125,12 +105,75 @@ export async function POST(request: Request) {
         maxTokens: CALL_CONFIG.clientMaxTokens,
         temperature: 1,
       });
-      const again = readTokens(retry.text);
+      const again = readReply(retry);
       if (again.reply) ({ reply, outcome: tokenOutcome } = again);
     } catch {
       // keep the original reply
     }
   }
+
+  // Models misquote money ("a nine-dollar plastic stick" for a 19-dollar pen).
+  // One retry with the real price; if that is still off, keep whichever reply
+  // gets fewer amounts wrong (ties keep the first).
+  const prices = priceContext(persona, item, turns);
+  const misquoted = suspiciousAmounts(reply, prices);
+  if (misquoted.length > 0) {
+    console.error(`[call] misquoted ${misquoted.join(", ")} (price ${item.unitPrice}); retrying once`);
+    try {
+      const retry = await chat({
+        model: MODELS.client(),
+        messages: [
+          ...messages,
+          { role: "assistant", content: reply },
+          { role: "system", content: priceNote(item.unitPrice, misquoted) },
+        ],
+        maxTokens: CALL_CONFIG.clientMaxTokens,
+        temperature: 0.9,
+      });
+      const again = readReply(retry);
+      if (again.reply && suspiciousAmounts(again.reply, prices).length < misquoted.length) {
+        ({ reply, outcome: tokenOutcome } = again);
+      }
+    } catch {
+      // keep the original reply
+    }
+  }
+
+  // A caught lie blocks the close until the caller owns it and talks straight
+  // for one more exchange (lib/game/lies.ts). The prompt says so; this holds
+  // the line when the model forgets. If the retry still closes, it stands.
+  const lie = lieState(turns);
+  if (tokenOutcome === "closed" && closeBlocked(lie)) {
+    console.error(`[call] close blocked by lie state ${lie.kind}; retrying once`);
+    try {
+      const retry = await chat({
+        model: MODELS.client(),
+        messages: [
+          ...messages,
+          { role: "assistant", content: reply },
+          {
+            role: "system",
+            content:
+              lie.kind === "unowned"
+                ? "(Director's note: you just agreed to buy, but you caught this caller lying and they never owned it. Write that reply again: you do NOT agree, and you say why. No [CLOSED].)"
+                : "(Director's note: you just agreed to buy, but the caller only just owned their lie. Write that reply again: acknowledge it, but do not agree yet; they need one more honest exchange. No [CLOSED].)",
+          },
+        ],
+        maxTokens: CALL_CONFIG.clientMaxTokens,
+        temperature: 0.9,
+      });
+      const again = readReply(retry);
+      if (again.reply && again.outcome !== "closed") ({ reply, outcome: tokenOutcome } = again);
+    } catch {
+      // keep the original reply
+    }
+  }
+
+  // Swears swapped and signature lines rationed in code (the prompt alone does
+  // not hold), and the sentence limit enforced. A reply that ends the call
+  // keeps its full length so the client's actual terms or goodbye are never cut.
+  reply = dropBackToBackPhrases(cleanLanguage(reply.replace(/\s*\n\s*/g, " ")), persona, turns);
+  if (tokenOutcome === "open") reply = capSentences(reply, 4);
 
   if (reply === "") {
     return errorResponse(

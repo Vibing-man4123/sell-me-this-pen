@@ -145,7 +145,12 @@ export async function chat(req: ChatRequest): Promise<ChatResult> {
 
   const choice = (parsed as { choices?: { message?: { content?: unknown }; finish_reason?: unknown }[] })
     ?.choices?.[0];
-  const content = choice?.message?.content;
+  const raw = choice?.message?.content;
+  // Qwen-family models can emit <think> blocks inline. The default client model
+  // was checked on 2026-11-21 and does not, but a model swap in the dashboard
+  // must not leak reasoning into the call. An unclosed block (cut off by the
+  // token cap) is dropped whole.
+  const content = typeof raw === "string" ? raw.replace(/<think>[\s\S]*?(<\/think>|$)/g, "") : raw;
 
   if (typeof content !== "string" || content.trim() === "") {
     // Seen for real: a reasoning model spending its whole budget on reasoning.
