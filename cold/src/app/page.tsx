@@ -5,6 +5,7 @@ import { PersonaPortrait } from "@/components/art/PersonaPortrait";
 import { TrophyShelf } from "@/components/shop/TrophyShelf";
 import { BalanceChip } from "@/components/ui/BalanceChip";
 import { ART } from "@/lib/art/assets";
+import { SkipGrind } from "@/components/ui/SkipGrind";
 import { ButtonLink } from "@/components/ui/Button";
 import { Eyebrow, Panel } from "@/components/ui/Panel";
 import { GAME_TITLE_LINES, PLAYER_CHARACTER, STARTER_CALL } from "@/lib/game/constants";
@@ -59,6 +60,7 @@ export default function TitleScreen() {
             <ButtonLink href={`/call/${STARTER_CALL.personaId}/${STARTER_CALL.itemId}`} variant="ghost">
               First call
             </ButtonLink>
+            <SkipGrind />
             <HowToPlayLauncher autoOpen />
             <ButtonLink href="/moodboard#rubric" variant="ghost">
               How you&apos;re graded

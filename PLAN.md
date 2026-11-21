@@ -2,6 +2,8 @@
 
 > Tytuł: **"Sell Me This Pen"** (ustalony 2026-11-09; robocze warianty: "Dial Tone Dynasty", "Cold Call Tycoon", "The Rolodex"). Katalog roboczy aplikacji: `cold/`. Zamiast używać wizerunku prawdziwego Jordana Belforta (ryzyko prawne/wizerunkowe na publicznym portfolio), gracz wciela się w **oryginalną karykaturę** — "Jordan Beltford", parodystycznego brokera lat 90' z za dużym gelem na głowie. Ten sam vibe, zero problemów z prawami do wizerunku.
 
+> **2026-11-21: zmiana celu — projekt do CV/portfolio, jeden odbiorca, prostota ponad skalę.**
+
 ## Koncept w jednym zdaniu
 Gracz jako karykatura cwanego brokera prowadzi cold calle sprzedając coraz absurdalniejsze przedmioty rosnąco dziwnym AI-klientom, zarabia kasę na podstawie realnej oceny jego rozmowy (charyzma/pewność/obsługa obiekcji/closing), i wydaje ją na coraz bardziej groteskowy luksusowy styl życia — klasyczna progression loop w stylu "Wall Street excess".
 
@@ -84,17 +86,22 @@ Kierunek ustalony 2026-11-12: **Flash / Newgrounds ok. 2003** zamiast powściąg
 **Kolejność robienia (z `ART.md`):** najpierw TYLKO Jordan + Brenda (3 miny) + telefon jako test kierunku → pokazać → dopiero potem reszta. Trzy assety w złym stylu to strata, trzydzieści to katastrofa.
 
 ### Faza 4 — Classroom-ready polish (3-5 dni)
-- Test na słabszym sprzęcie (Chromebooki szkolne) — szybki ładowanie, brak loginu wymaganego
-- Friendly error handling gdy Groq rate-limit się wyczerpie (komunikat w tonie gry, np. "rynek się zawalił, spróbuj za chwilę")
+- Test na słabszym sprzęcie (Chromebooki szkolne) — szybki ładowanie, brak loginu wymaganego *(nie jest już wymagane — 2026-11-21, cel to portfolio, nie klasa)*
+- Friendly error handling gdy Groq rate-limit się wyczerpie (komunikat w tonie gry, np. "rynek się zawalił, spróbuj za chwilę") *(część klasowa — limity na skalę klasy — nie jest już wymagana, 2026-11-21; komunikat zostaje, bo już działa)*
 - Responsywność (tablet/laptop)
 - Finalny deploy + ewentualny tutorial/onboarding ekran
 
 **Razem do grywalnego, pokazywalnego MVP: ~4-5 tygodni w tempie kilka h/tydzień.**
 
-### Faza 5 — Stretch goals (bez limitu czasowego)
+### Faza 5 — Stretch goals (bez limitu czasowego) — porzucona 2026-11-21 — poza zakresem portfolio
 - Wspólny leaderboard klasowy (Supabase)
 - Input głosowy + metryki mowy (tempo, filler words)
 - Więcej person/przedmiotów, "przedmiot dnia" generowany przez LLM
+
+### Faza 5 (nowa) — Portfolio polish (2026-11-21)
+- Tryb „Skip the grind” — odblokuj wszystko jednym kliknięciem, dla oglądającego
+- README na GitHubie ze screenshotami/GIF i opisem decyzji technicznych
+- Ewentualnie link w CV
 
 ---
 

@@ -3,7 +3,7 @@
 > Plik prowadzony równolegle do `PLAN.md`. `PLAN.md` = co zamierzamy, `PROGRESS.md` = co faktycznie zrobione i jak stoimy z czasem.
 
 **Start projektu:** 2026-11-08
-**Ostatnia aktualizacja:** 2026-11-19
+**Ostatnia aktualizacja:** 2026-11-21
 **Live:** https://sellmethispen.vercel.app
 
 ---
@@ -14,13 +14,30 @@
 |---|---|---|---|---|
 | **0** | Setup & design | 2–3 dni | 2026-11-10 | ✅ **ZAMKNIĘTA** 2026-11-09 |
 | **1** | Core call loop (MVP) | ~1 tydzień | 2026-11-17 | ✅ **ZAMKNIĘTA** 2026-11-11 |
-| **2** | Progression system | ~1 tydzień | 2026-11-24 | ✅ **ZAMKNIĘTA** 2026-11-19 (5 dni przed planem) — ⚠️ jeszcze nie scommitowana ani nie wdrożona, czeka na właściciela |
-| 3 | Humor & polish treści | ~1 tydzień | 2026-12-01 | ⚪ Nie zaczęte |
-| 4 | Classroom-ready polish | 3–5 dni | 2026-12-06 | ⚪ Nie zaczęte |
+| **2** | Progression system | ~1 tydzień | 2026-11-24 | ✅ **ZAMKNIĘTA** 2026-11-19 (5 dni przed planem) — ✅ wdrożona 2026-11-21 (`b6738c6`) |
+| 3 | Humor & polish treści | ~1 tydzień | 2026-12-01 | ✅ **ZAMKNIĘTA** 2026-11-19 (od strony kodu) — ✅ wdrożona 2026-11-21 (`b6738c6`) |
+| 4 | Classroom-ready polish | 3–5 dni | 2026-12-06 | 🟡 Kod wdrożony 2026-11-21 (`b6738c6`); część klasowa porzucona — patrz 2026-11-21 |
 
 **Jak się trzymamy:** mocno przed harmonogramem. Faza 1 zamknięta 2026-11-11 (6 dni zapasu), a Fazy 2 i 3 obie zamknięte 2026-11-19 — Faza 2 pięć dni przed planowanym 24.11, Faza 3 ponad dwa tygodnie przed planowanym 01.12 (od strony kodu; finalna grafika czeka na właściciela). Gra jest **grywalna od początku do końca**, z progresją, sklepem, humorem i dźwiękiem. Zmiany Faz 2-3 nie są jeszcze scommitowane ani wdrożone. Zostaje Faza 4 (classroom-ready polish).
 
 Legenda: 🟢 zrobione · 🟡 w trakcie · 🔴 zablokowane · ⚪ nie zaczęte
+
+---
+
+## 2026-11-21 — Wdrożenie Faz 2-4 i zmiana celu
+
+- **Wdrożone:** commit `b6738c6` („Phases 2-4: progression, humor pass, classroom polish") na `main`, live pod https://sellmethispen.vercel.app. `/`, `/rolodex`, `/shop` zwracają 200.
+- **Analiza kapacity Groq — zrobiona:** jedna pełna rozmowa to ~13k tokenów na modelu klienta, sędzia ~4–6k. Darmowy tier (8K TPM / 1K RPD per model) wystarcza dla jednego gracza.
+- **Pula modeli, płatny tier, cache'owanie — porzucone.** Zostały zaczęte, potem anulowane i cofnięte decyzją właściciela (zakres portfolio).
+- **Ryzyko rate-limitu:** zamknięte jako „nie dotyczy — jeden gracz".
+- **Zmiana celu:** projekt do CV/portfolio, jeden odbiorca, prostota ponad skalę (patrz `PLAN.md`).
+
+### Następny krok — Faza 5 (nowa): Portfolio polish
+1. Tryb „Skip the grind” — odblokuj wszystko jednym kliknięciem, dla oglądającego
+2. README na GitHubie ze screenshotami/GIF i opisem decyzji technicznych
+3. Ewentualnie link w CV
+
+**Zrobione 2026-11-21:** tryb „Skip the grind” (przycisk na tytule + link w Rolodexie, jedna akcja `skipGrind` w store, bez zmiany wersji persist) i README na GitHubie (`README.md`, 4 screenshoty w `docs/screenshots/`). Zostaje link w CV — po stronie właściciela.
 
 ---
 

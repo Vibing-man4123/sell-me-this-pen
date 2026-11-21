@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { getShopItem, shopItemUnlocked } from "@/lib/game/shop";
-import { RANK_ORDER, rankFromEarnings, type Rank, type RankId } from "@/lib/game/ranks";
+import { RANKS, RANK_ORDER, rankFromEarnings, type Rank, type RankId } from "@/lib/game/ranks";
 
 /**
  * Player progression, persisted to localStorage.
@@ -50,6 +50,8 @@ type ProgressState = {
   /** Spends from balance. Returns false (and changes nothing) if it would go negative. */
   spend: (amount: number) => boolean;
   reset: () => void;
+  /** Viewer shortcut: top rank, a fat balance, tutorial skipped. No promotion popup. */
+  skipGrind: () => void;
 };
 
 const initial = { balance: 0, lifetimeEarnings: 0, history: [] as CallRecord[],
@@ -95,6 +97,15 @@ export const useProgress = create<ProgressState>()(
         return true;
       },
       markTutorialSeen: () => set({ tutorialSeen: true }),
+      skipGrind: () => {
+        const top = RANKS[RANKS.length - 1];
+        set((s) => ({
+          lifetimeEarnings: Math.max(s.lifetimeEarnings, top.threshold),
+          balance: s.balance + 100_000,
+          highestRankSeen: top.id,
+          tutorialSeen: true,
+        }));
+      },
       // A reset wipes money, not the memory of having read the instructions.
       reset: () => set({ ...initial, tutorialSeen: get().tutorialSeen }),
     }),

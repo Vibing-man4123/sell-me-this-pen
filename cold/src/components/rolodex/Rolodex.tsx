@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ItemIcon } from "@/components/art/ItemIcon";
 import { PersonaPortrait } from "@/components/art/PersonaPortrait";
+import { SkipGrind } from "@/components/ui/SkipGrind";
 import { ButtonLink } from "@/components/ui/Button";
 import { Eyebrow, Panel } from "@/components/ui/Panel";
 import { STARTER_CALL } from "@/lib/game/constants";
@@ -164,6 +165,10 @@ export function Rolodex() {
           })}
         </ul>
       </section>
+
+      <div className="flex flex-col items-center gap-3">
+        <SkipGrind link />
+      </div>
 
       <div className="flex justify-center gap-3">
         <ButtonLink href="/shop" variant="gold">
